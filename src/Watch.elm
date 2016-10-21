@@ -8,11 +8,16 @@ import Time exposing (Time, millisecond)
 import Task
 
 
+(=>) =
+    (,)
+
+
+
 -- Model ---------------------------------------------------------------------
 
 
 type alias Model =
-    { max_times : Int
+    { max_times : Maybe Int
     , start_times : List Time
     , time : Time
     , times : List Float
@@ -29,7 +34,7 @@ init =
         model : Model
         model =
             Model
-                5
+                Nothing
                 []
                 0
                 []
@@ -47,6 +52,20 @@ type Msg
     | Stop
     | Reset
     | Tick Time
+
+
+
+-- Additional Functions ------------------------------------------------------
+
+
+isEven : Int -> Bool
+isEven i =
+    i `rem` 2 == 0
+
+
+isOdd : Int -> Bool
+isOdd =
+    not << isEven
 
 
 
@@ -70,7 +89,7 @@ update msg model =
                 newModel : Model
                 newModel =
                     { model
-                        | max_times = i
+                        | max_times = Just i
                     }
             in
                 newModel ! []
@@ -79,7 +98,12 @@ update msg model =
             let
                 newStartTimes : List Time
                 newStartTimes =
-                    List.drop (List.length (model.start_times ++ [ model.time ]) - model.max_times) (model.start_times ++ [ model.time ])
+                    case model.max_times of
+                        Just max_times ->
+                            List.drop (List.length (model.start_times ++ [ model.time ]) - max_times) (model.start_times ++ [ model.time ])
+
+                        Nothing ->
+                            []
 
                 newModel : Model
                 newModel =
@@ -124,7 +148,37 @@ update msg model =
 
 
 
--- View ----------------------------------------------------------------------
+-- Material Elements ---------------------------------------------------------
+
+
+col : String -> List (Html Msg) -> Html Msg
+col size content =
+    div [ classList [ size => True, "col" => True ] ]
+        content
+
+
+row : List (Html Msg) -> Html Msg
+row content =
+    div [ class "row" ]
+        content
+
+
+button : String -> String -> Msg -> Html Msg
+button color txt msg =
+    a
+        [ href "#!"
+        , onClick msg
+        , classList
+            [ color => True
+            , "btn btn-large" => True
+            ]
+        ]
+        [ text txt ]
+
+
+
+-- Custom Elements -----------------------------------------------------------
+-- Constructors --------------------------------------------------------------
 
 
 displayTime : Time -> Html Msg
@@ -150,27 +204,52 @@ displayAbsoluteTime time times =
             text "Start"
 
 
-button : String -> String -> Msg -> Html Msg
-button color txt msg =
-    a
-        [ href "#!"
-        , onClick msg
-        ]
-        [ text txt ]
+displayMaxTimesOption : Int -> Html Msg
+displayMaxTimesOption i =
+    let
+        color : String
+        color =
+            if isOdd i then
+                "black"
+            else
+                "white"
+    in
+        col "s12" [ button color (toString i) (MaxTimes i) ]
+
+
+
+-- View ----------------------------------------------------------------------
 
 
 view : Model -> Html Msg
 view model =
-    [ div [] [ displayAbsoluteTime model.time model.start_times ]
-    , div [] [ displayTimes model.times ]
-    , div [] [ button "" "Reset" Reset ]
-    , div []
-        [ button "" "Start" Start
-        , text "   :     "
-        , button "" "Stop" Stop
-        ]
-    ]
-        |> div []
+    let
+        app : List (Html Msg)
+        app =
+            [ row [ displayAbsoluteTime model.time model.start_times ]
+            , row [ displayTimes model.times ]
+            , row [ col "s12" [ button "black white-text" "Reset" Reset ] ]
+            , row
+                [ col "s12 m12 l6" [ button "white black-text" "Start" Start ]
+                , col "s12 m12 l6" [ button "black white-text" "Stop" Stop ]
+                ]
+            ]
+
+        setup : List (Html Msg)
+        setup =
+            (List.map displayMaxTimesOption [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ])
+
+        content : List (Html Msg)
+        content =
+            case model.max_times of
+                Just _ ->
+                    app
+
+                Nothing ->
+                    setup
+    in
+        content
+            |> div []
 
 
 
