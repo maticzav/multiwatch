@@ -8535,7 +8535,7 @@ var _user$project$Watch$MaxTimes = function (a) {
 	return {ctor: 'MaxTimes', _0: a};
 };
 var _user$project$Watch$displayMaxTimesOption = function (i) {
-	var color = _user$project$Watch$isOdd(i) ? 'black' : 'white';
+	var color = _user$project$Watch$isOdd(i) ? 'black white-text' : 'white black-text';
 	return A2(
 		_user$project$Watch$col,
 		's12',

@@ -210,9 +210,9 @@ displayMaxTimesOption i =
         color : String
         color =
             if isOdd i then
-                "black"
+                "black white-text"
             else
-                "white"
+                "white black-text"
     in
         col "s12" [ button color (toString i) (MaxTimes i) ]
 
