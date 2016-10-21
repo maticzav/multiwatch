@@ -8347,9 +8347,23 @@ var _elm_lang$html$Html_Events$Options = F2(
 	});
 
 var _user$project$Watch$displayTime = function (time) {
+	var minutes = _elm_lang$core$Basics$floor(
+		_elm_lang$core$Time$inMinutes(time));
+	var seconds = _elm_lang$core$Basics$floor(
+		_elm_lang$core$Time$inSeconds(
+			time - (_elm_lang$core$Basics$toFloat(minutes) * _elm_lang$core$Time$minute)));
+	var miliseconds = _elm_lang$core$Basics$floor(
+		_elm_lang$core$Time$inMilliseconds(
+			time - (_elm_lang$core$Basics$toFloat(seconds) * _elm_lang$core$Time$second)));
 	return _elm_lang$html$Html$text(
-		_elm_lang$core$Basics$toString(
-			_elm_lang$core$Time$inMilliseconds(time)));
+		A2(
+			_elm_lang$core$String$join,
+			' : ',
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$core$Basics$toString,
+				_elm_lang$core$Native_List.fromArray(
+					[minutes, seconds, miliseconds]))));
 };
 var _user$project$Watch$displayTimes = function (times) {
 	return A2(

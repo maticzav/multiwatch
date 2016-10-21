@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Time exposing (Time, millisecond)
 import Task
+import String
 
 
 (=>) =
@@ -183,9 +184,22 @@ button color txt msg =
 
 displayTime : Time -> Html Msg
 displayTime time =
-    Time.inMilliseconds time
-        |> toString
-        |> text
+    let
+        minutes =
+            Time.inMinutes time
+                |> floor
+
+        seconds =
+            Time.inSeconds (time - (toFloat minutes) * Time.minute)
+                |> floor
+
+        miliseconds =
+            Time.inMilliseconds (time - (toFloat seconds) * Time.second)
+                |> floor
+    in
+        List.map toString [ minutes, seconds, miliseconds ]
+            |> String.join " : "
+            |> text
 
 
 displayTimes : List Time -> Html Msg
