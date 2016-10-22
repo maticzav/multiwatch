@@ -153,14 +153,20 @@ update msg model =
 
 
 col : String -> List (Html Msg) -> Html Msg
-col size content =
-    div [ classList [ size => True, "col" => True ] ]
+col styles content =
+    div [ classList [ styles => True, "col" => True ] ]
         content
 
 
-row : List (Html Msg) -> Html Msg
-row content =
-    div [ class "row" ]
+row : String -> List (Html Msg) -> Html Msg
+row styles content =
+    div [ classList [ "row" => True, styles => True ] ]
+        content
+
+
+section : String -> List (Html Msg) -> Html Msg
+section styles content =
+    div [ classList [ "section" => True, styles => True ] ]
         content
 
 
@@ -171,7 +177,7 @@ button color txt msg =
         , onClick msg
         , classList
             [ color => True
-            , "btn btn-large" => True
+            , "btn btn-xlarge" => True
             ]
         ]
         [ text txt ]
@@ -204,8 +210,13 @@ displayTime time =
 
 displayTimes : List Time -> Html Msg
 displayTimes times =
-    div []
-        (List.map displayTime times)
+    let
+        present : Time -> Html Msg
+        present time =
+            col "s6 flow-text" [ displayTime time ]
+    in
+        div []
+            (List.map present times)
 
 
 displayAbsoluteTime : Time -> List Time -> Html Msg
@@ -228,7 +239,7 @@ displayMaxTimesOption i =
             else
                 "white black-text"
     in
-        col "s12" [ button color (toString i) (MaxTimes i) ]
+        col "s12 " [ button (String.join " " [ "full-width", color ]) (toString i) (MaxTimes i) ]
 
 
 
@@ -240,18 +251,30 @@ view model =
     let
         app : List (Html Msg)
         app =
-            [ row [ displayAbsoluteTime model.time model.start_times ]
-            , row [ displayTimes model.times ]
-            , row [ col "s12" [ button "black white-text" "Reset" Reset ] ]
-            , row
-                [ col "s12 m12 l6" [ button "white black-text" "Start" Start ]
-                , col "s12 m12 l6" [ button "black white-text" "Stop" Stop ]
+            [ section "valign-wrapper no-pad-bot"
+                [ row "valign full-width center"
+                    [ col "s6" [ p [ class "flow-text abs-time" ] [ displayAbsoluteTime model.time model.start_times ] ]
+                    , col "s6" [ p [ class "flow-text abs-time" ] [ (text << toString) (List.length model.start_times) ] ]
+                    ]
+                ]
+            , section "no-pad-bot"
+                [ row "valign full-width center large-line" [ displayTimes model.times ] ]
+            , section "bottom full-width no-pad-bot"
+                [ row "no-pad-bot" [ col "s12 no-pad" [ button "white black-text full-width" "Reset" Reset ] ]
+                , row ""
+                    [ col "s12 m12 l6 no-pad" [ button "black white-text full-width" "Start" Start ]
+                    , col "s12 m12 l6 no-pad" [ button "white black-text full-width" "Stop" Stop ]
+                    ]
                 ]
             ]
 
         setup : List (Html Msg)
         setup =
-            (List.map displayMaxTimesOption [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ])
+            [ section "valign-wrapper no-pad-bot white black-text"
+                [ row "valign center container" [ p [ class "flow-text" ] [ text "Pick the number of maximum times that are being watch at the same time." ] ]
+                ]
+            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ])
+            ]
 
         content : List (Html Msg)
         content =
@@ -263,7 +286,7 @@ view model =
                     setup
     in
         content
-            |> div []
+            |> div [ class "full-width full-height black white-text no-pad-bot" ]
 
 
 
