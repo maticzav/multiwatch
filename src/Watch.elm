@@ -69,6 +69,12 @@ isOdd =
     not << isEven
 
 
+indexList : List a -> List ( Int, a )
+indexList list =
+    List.foldr (\new ( i, s ) -> ( i + 1, ( i, new ) :: s )) ( 0, [] ) list
+        |> snd
+
+
 
 -- Subscriptions -------------------------------------------------------------
 
@@ -188,7 +194,7 @@ button color txt msg =
 -- Constructors --------------------------------------------------------------
 
 
-displayTime : Time -> Html Msg
+displayTime : Time -> String
 displayTime time =
     let
         minutes =
@@ -205,18 +211,22 @@ displayTime time =
     in
         List.map toString [ minutes, seconds, miliseconds ]
             |> String.join " : "
-            |> text
 
 
 displayTimes : List Time -> Html Msg
 displayTimes times =
     let
-        present : Time -> Html Msg
-        present time =
-            col "s6 flow-text" [ displayTime time ]
+        present : ( Int, Time ) -> Html Msg
+        present ( i, time ) =
+            col "s6 flow-text" [ text ((toString (i + 1)) ++ " | " ++ (displayTime time)) ]
     in
-        div []
-            (List.map present times)
+        indexList times
+            |> List.map present
+            |> div []
+
+
+
+-- foldr : (a -> b -> b) -> b -> List a -> b
 
 
 displayAbsoluteTime : Time -> List Time -> Html Msg
@@ -224,6 +234,7 @@ displayAbsoluteTime time times =
     case List.head times of
         Just ft ->
             displayTime (time - ft)
+                |> text
 
         Nothing ->
             text "Start"
@@ -257,13 +268,12 @@ view model =
                     , col "s6" [ p [ class "flow-text abs-time" ] [ (text << toString) (List.length model.start_times) ] ]
                     ]
                 ]
-            , section "no-pad-bot"
-                [ row "valign full-width center large-line" [ displayTimes model.times ] ]
+            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes model.times ] ]
             , section "bottom full-width no-pad-bot"
-                [ row "no-pad-bot" [ col "s12 no-pad" [ button "white black-text full-width" "Reset" Reset ] ]
-                , row ""
-                    [ col "s12 m12 l6 no-pad" [ button "black white-text full-width" "Start" Start ]
-                    , col "s12 m12 l6 no-pad" [ button "white black-text full-width" "Stop" Stop ]
+                [ row "no-pad-bot no-margin-bot" [ col "s12 no-pad" [ button "black white-text full-width" "Reset" Reset ] ]
+                , row "no-margin-bot"
+                    [ col "s12 m12 l6 no-pad" [ button "white black-text full-width" "Start" Start ]
+                    , col "s12 m12 l6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
                     ]
                 ]
             ]
@@ -286,10 +296,11 @@ view model =
                     setup
     in
         content
-            |> div [ class "full-width full-height black white-text no-pad-bot" ]
+            |> div [ class "full-width full-height white black-text no-pad-bot" ]
 
 
 
+-- aaaaaaa
 -- App -----------------------------------------------------------------------
 
 
