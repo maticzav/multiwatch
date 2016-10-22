@@ -8663,8 +8663,7 @@ var _user$project$Watch$view = function (model) {
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$Watch$displayMaxTimesOption,
-				_elm_lang$core$Native_List.fromArray(
-					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10])))
+				_elm_lang$core$Native_List.range(1, 20)))
 		]);
 	var app = _elm_lang$core$Native_List.fromArray(
 		[
@@ -8726,7 +8725,18 @@ var _user$project$Watch$view = function (model) {
 					'valign full-width center large-line',
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_user$project$Watch$displayTimes(model.times)
+							_user$project$Watch$displayTimes(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$List$reverse(
+									A2(
+										_elm_lang$core$List$map,
+										F2(
+											function (x, y) {
+												return x - y;
+											})(model.time),
+										model.start_times)),
+								model.times))
 						]))
 				])),
 			A2(

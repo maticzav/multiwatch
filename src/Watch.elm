@@ -225,10 +225,6 @@ displayTimes times =
             |> div []
 
 
-
--- foldr : (a -> b -> b) -> b -> List a -> b
-
-
 displayAbsoluteTime : Time -> List Time -> Html Msg
 displayAbsoluteTime time times =
     case List.head times of
@@ -268,7 +264,7 @@ view model =
                     , col "s6" [ p [ class "flow-text abs-time" ] [ (text << toString) (List.length model.start_times) ] ]
                     ]
                 ]
-            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes model.times ] ]
+            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes ((List.reverse <| List.map ((-) model.time) model.start_times) ++ model.times) ] ]
             , section "bottom full-width no-pad-bot"
                 [ row "no-pad-bot no-margin-bot" [ col "s12 no-pad" [ button "black white-text full-width" "Reset" Reset ] ]
                 , row "no-margin-bot"
@@ -283,7 +279,7 @@ view model =
             [ section "valign-wrapper no-pad-bot white black-text"
                 [ row "valign center container" [ p [ class "flow-text" ] [ text "Pick the number of maximum times that are being watch at the same time." ] ]
                 ]
-            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ])
+            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [1..20])
             ]
 
         content : List (Html Msg)
@@ -300,7 +296,6 @@ view model =
 
 
 
--- aaaaaaa
 -- App -----------------------------------------------------------------------
 
 
