@@ -7,6 +7,7 @@ import Html.Events exposing (..)
 import Time exposing (Time, millisecond)
 import Task
 import String
+import Debug exposing (..)
 
 
 (=>) =
@@ -17,11 +18,24 @@ import String
 -- Model ---------------------------------------------------------------------
 
 
+type alias ID =
+    Int
+
+
+type alias Watch =
+    { id : ID
+    , start : Time
+    , laps : List Time
+    , end : Maybe Time
+    , view : Maybe Int
+    }
+
+
 type alias Model =
-    { max_times : Maybe Int
-    , start_times : List Time
+    { current_id : ID
     , time : Time
-    , times : List Float
+    , times : List Watch
+    , max_times : Maybe Int
     }
 
 
@@ -29,18 +43,28 @@ type alias Model =
 -- Init ----------------------------------------------------------------------
 
 
+newWatch : ID -> Time -> Watch
+newWatch id time =
+    Watch
+        id
+        time
+        []
+        Nothing
+        Nothing
+
+
+defaultModel : Model
+defaultModel =
+    Model
+        0
+        0
+        []
+        Nothing
+
+
 init : ( Model, Cmd Msg )
 init =
-    let
-        model : Model
-        model =
-            Model
-                Nothing
-                []
-                0
-                []
-    in
-        model ! []
+    defaultModel ! []
 
 
 
@@ -48,11 +72,14 @@ init =
 
 
 type Msg
-    = MaxTimes Int
+    = NoOp
+    | Tick Time
+    | MaxTimes Int
     | Start
     | Stop
+    | Lap ID
+    | Display ID
     | Reset
-    | Tick Time
 
 
 
@@ -75,6 +102,27 @@ indexList list =
         |> snd
 
 
+isJust : Maybe a -> Bool
+isJust myb =
+    case myb of
+        Just _ ->
+            True
+
+        Nothing ->
+            False
+
+
+isNothing : Maybe a -> Bool
+isNothing =
+    not << isJust
+
+
+slice : Int -> Int -> List -> List
+slice i s l =
+    List.drop i l
+        |> List.take s
+
+
 
 -- Subscriptions -------------------------------------------------------------
 
@@ -91,6 +139,19 @@ subscriptions model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            model ! []
+
+        Tick newTime ->
+            let
+                newModel : Model
+                newModel =
+                    { model
+                        | time = newTime
+                    }
+            in
+                newModel ! []
+
         MaxTimes i ->
             let
                 newModel : Model
@@ -103,30 +164,56 @@ update msg model =
 
         Start ->
             let
-                newStartTimes : List Time
-                newStartTimes =
+                --TODO: Remove firt unfinished added when starting new
+                unfinished : List Watch
+                unfinished =
+                    List.filter (\t -> isNothing t.end) model.times
+
+                newTimes : List Watch
+                newTimes =
                     case model.max_times of
                         Just max_times ->
-                            List.drop (List.length (model.start_times ++ [ model.time ]) - max_times) (model.start_times ++ [ model.time ])
+                            List.drop (1 + List.length unfinished - max_times) (newWatch model.current_id model.time :: model.times)
 
                         Nothing ->
                             []
 
+                max_id : Int
+                max_id =
+                    case List.maximum (List.map .id newTimes) of
+                        Just max ->
+                            max
+
+                        Nothing ->
+                            model.current_id
+
                 newModel : Model
                 newModel =
                     { model
-                        | start_times = newStartTimes
+                        | current_id = 1 + max_id
+                        , times = newTimes
                     }
             in
                 newModel ! []
 
         Stop ->
             let
-                newTimes : List Float
+                unfinished : List Watch
+                unfinished =
+                    List.filter (\t -> isNothing t.end) model.times
+
+                end : ID -> Watch -> Watch
+                end id watch =
+                    if watch.id == id then
+                        { watch | end = Just model.time }
+                    else
+                        watch
+
+                newTimes : List Watch
                 newTimes =
-                    case List.head model.start_times of
-                        Just time ->
-                            (model.time - time) :: model.times
+                    case List.head (List.sortBy .id unfinished) of
+                        Just watch ->
+                            List.map (end watch.id) model.times
 
                         Nothing ->
                             model.times
@@ -134,8 +221,68 @@ update msg model =
                 newModel : Model
                 newModel =
                     { model
-                        | start_times = List.drop 1 model.start_times
-                        , times = newTimes
+                        | times = newTimes
+                    }
+            in
+                newModel ! []
+
+        Lap id ->
+            let
+                unfinished : List Watch
+                unfinished =
+                    List.filter (\t -> isNothing t.end) model.times
+
+                lap : ID -> Watch -> Watch
+                lap id watch =
+                    if watch.id == id then
+                        { watch | laps = model.time :: watch.laps }
+                    else
+                        watch
+
+                newTimes : List Watch
+                newTimes =
+                    if List.member id (List.map .id unfinished) then
+                        List.map (lap id) model.times
+                    else
+                        model.times
+
+                newModel : Model
+                newModel =
+                    { model
+                        | times = newTimes
+                    }
+            in
+                newModel ! []
+
+        Display id ->
+            let
+                nv : Watch -> Maybe Int
+                nv watch =
+                    case watch.view of
+                        Just v ->
+                            if (v + 1) >= List.length watch.laps then
+                                Nothing
+                            else
+                                Just (v + 1)
+
+                        Nothing ->
+                            Just 0
+
+                display : Watch -> Watch
+                display watch =
+                    if watch.id == id then
+                        { watch | view = nv watch }
+                    else
+                        watch
+
+                newTimes : List Watch
+                newTimes =
+                    List.map display model.times
+
+                newModel : Model
+                newModel =
+                    { model
+                        | times = newTimes
                     }
             in
                 newModel ! []
@@ -143,24 +290,14 @@ update msg model =
         Reset ->
             init
 
-        Tick newTime ->
-            let
-                newModel : Model
-                newModel =
-                    { model
-                        | time = newTime
-                    }
-            in
-                newModel ! []
-
 
 
 -- Material Elements ---------------------------------------------------------
 
 
-col : String -> List (Html Msg) -> Html Msg
-col styles content =
-    div [ classList [ styles => True, "col" => True ] ]
+col : Msg -> String -> List (Html Msg) -> Html Msg
+col msg styles content =
+    div [ onClick msg, classList [ styles => True, "col" => True ] ]
         content
 
 
@@ -213,23 +350,44 @@ displayTime time =
             |> String.join " : "
 
 
-displayTimes : List Time -> Html Msg
-displayTimes times =
+
+-- Watch here is meant as Watch type
+
+
+displayWatch : Time -> Watch -> Html Msg
+displayWatch ct watch =
     let
-        present : ( Int, Time ) -> Html Msg
-        present ( i, time ) =
-            col "s6 flow-text" [ text ((toString (i + 1)) ++ " | " ++ (displayTime time)) ]
+        action : ID -> Msg
+        action =
+            if isNothing watch.end then
+                Lap
+            else
+                Display
+
+        time : Time
+        time =
+            case watch.view of
+                Just v ->
+                    0
+
+                Nothing ->
+                    0
     in
-        indexList times
-            |> List.map present
-            |> div []
+        col (action watch.id) "s6 flow-text" [ text ((toString (watch.id + 1)) ++ " | " ++ (displayTime time)) ]
 
 
-displayAbsoluteTime : Time -> List Time -> Html Msg
+displayTimes : Model -> Html Msg
+displayTimes model =
+    -- div [] [ (text << toString) model.times ]
+    List.map (displayWatch model.time) model.times
+        |> div []
+
+
+displayAbsoluteTime : Time -> List Watch -> Html Msg
 displayAbsoluteTime time times =
-    case List.head times of
+    case List.head (List.sortBy .id times) of
         Just ft ->
-            displayTime (time - ft)
+            displayTime (time - ft.start)
                 |> text
 
         Nothing ->
@@ -246,7 +404,7 @@ displayMaxTimesOption i =
             else
                 "white black-text"
     in
-        col "s12 " [ button (String.join " " [ "full-width", color ]) (toString i) (MaxTimes i) ]
+        col NoOp "s12" [ button (String.join " " [ "full-width", color ]) (toString i) (MaxTimes i) ]
 
 
 
@@ -256,20 +414,24 @@ displayMaxTimesOption i =
 view : Model -> Html Msg
 view model =
     let
+        unfinished : List Watch
+        unfinished =
+            List.filter (\t -> isNothing t.end) model.times
+
         app : List (Html Msg)
         app =
             [ section "valign-wrapper no-pad-bot"
                 [ row "valign full-width center"
-                    [ col "s6" [ p [ class "flow-text abs-time" ] [ displayAbsoluteTime model.time model.start_times ] ]
-                    , col "s6" [ p [ class "flow-text abs-time" ] [ (text << toString) (List.length model.start_times) ] ]
+                    [ col NoOp "s6" [ p [ class "flow-text abs-time" ] [ displayAbsoluteTime model.time unfinished ] ]
+                    , col NoOp "s6" [ p [ class "flow-text abs-time" ] [ (text << toString << List.length) unfinished ] ]
                     ]
                 ]
-            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes ((List.reverse <| List.map ((-) model.time) model.start_times) ++ model.times) ] ]
+            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes model ] ]
             , section "bottom full-width no-pad-bot"
-                [ row "no-pad-bot no-margin-bot" [ col "s12 no-pad" [ button "black white-text full-width" "Reset" Reset ] ]
+                [ row "no-pad-bot no-margin-bot" [ col NoOp "s12 no-pad" [ button "black white-text full-width" "Reset" Reset ] ]
                 , row "no-margin-bot"
-                    [ col "s12 m12 l6 no-pad" [ button "white black-text full-width" "Start" Start ]
-                    , col "s12 m12 l6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
+                    [ col NoOp "s12 m12 l6 no-pad" [ button "white black-text full-width" "Start" Start ]
+                    , col NoOp "s12 m12 l6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
                     ]
                 ]
             ]
