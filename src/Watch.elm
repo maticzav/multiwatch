@@ -242,7 +242,7 @@ update msg model =
                 lap : ID -> Watch -> Watch
                 lap id watch =
                     if watch.id == id then
-                        { watch | laps = model.time :: watch.laps }
+                        { watch | laps = watch.laps ++ [ model.time ] }
                     else
                         watch
 
@@ -374,29 +374,21 @@ displayWatch ct watch =
             else
                 Display
 
+        laps : List Time
+        laps =
+            (List.map Just (watch.start :: watch.laps) ++ [ watch.end ])
+                |> List.filterMap identity
+
         time : Time
         time =
             case watch.view of
                 Just v ->
-                    case take2 (List.drop v watch.laps) of
+                    case take2 (List.drop v laps) of
                         Just ( i, f ) ->
                             (f - i)
 
                         Nothing ->
-                            case List.head (List.drop v watch.laps) of
-                                Just f ->
-                                    if v == 0 then
-                                        (f - watch.start)
-                                    else
-                                        case watch.end of
-                                            Just et ->
-                                                (et - f)
-
-                                            Nothing ->
-                                                0
-
-                                Nothing ->
-                                    0
+                            0
 
                 Nothing ->
                     case watch.end of
@@ -407,14 +399,22 @@ displayWatch ct watch =
                             (ct - watch.start)
 
         v =
-            case watch.view of
-                Just x ->
-                    toString x
+            case watch.end of
+                Just _ ->
+                    case watch.view of
+                        Just x ->
+                            toString (x + 1)
+
+                        Nothing ->
+                            "•"
 
                 Nothing ->
-                    "abs"
+                    if (not << List.isEmpty) watch.laps then
+                        (toString << List.length) watch.laps
+                    else
+                        ""
     in
-        col (action watch.id) "s6 flow-text" [ text ((toString (watch.id + 1)) ++ v ++ " | " ++ (displayTime time)) ]
+        col (action watch.id) "s6 flow-text" [ text (String.join " " [ toString (watch.id + 1), v, "|", displayTime time ]) ]
 
 
 displayTimes : Model -> Html Msg
