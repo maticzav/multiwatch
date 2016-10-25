@@ -117,7 +117,7 @@ isNothing =
     not << isJust
 
 
-slice : Int -> Int -> List -> List
+slice : Int -> Int -> List a -> List a
 slice i s l =
     List.drop i l
         |> List.take s
@@ -266,7 +266,10 @@ update msg model =
                                 Just (v + 1)
 
                         Nothing ->
-                            Just 0
+                            if (not << List.isEmpty) watch.laps then
+                                Just 0
+                            else
+                                Nothing
 
                 display : Watch -> Watch
                 display watch =
@@ -371,7 +374,12 @@ displayWatch ct watch =
                     0
 
                 Nothing ->
-                    0
+                    case watch.end of
+                        Just et ->
+                            (et - watch.start)
+
+                        Nothing ->
+                            (ct - watch.start)
     in
         col (action watch.id) "s6 flow-text" [ text ((toString (watch.id + 1)) ++ " | " ++ (displayTime time)) ]
 
