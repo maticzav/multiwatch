@@ -117,10 +117,17 @@ isNothing =
     not << isJust
 
 
-slice : Int -> Int -> List a -> List a
-slice i s l =
-    List.drop i l
-        |> List.take s
+take2 : List a -> Maybe ( a, a )
+take2 list =
+    case list of
+        [] ->
+            Nothing
+
+        _ :: [] ->
+            Nothing
+
+        x :: xs :: _ ->
+            Just ( x, xs )
 
 
 
@@ -260,7 +267,7 @@ update msg model =
                 nv watch =
                     case watch.view of
                         Just v ->
-                            if (v + 1) >= List.length watch.laps then
+                            if (v + 1) > List.length watch.laps then
                                 Nothing
                             else
                                 Just (v + 1)
@@ -371,7 +378,25 @@ displayWatch ct watch =
         time =
             case watch.view of
                 Just v ->
-                    0
+                    case take2 (List.drop v watch.laps) of
+                        Just ( i, f ) ->
+                            (f - i)
+
+                        Nothing ->
+                            case List.head (List.drop v watch.laps) of
+                                Just f ->
+                                    if v == 0 then
+                                        (f - watch.start)
+                                    else
+                                        case watch.end of
+                                            Just et ->
+                                                (et - f)
+
+                                            Nothing ->
+                                                0
+
+                                Nothing ->
+                                    0
 
                 Nothing ->
                     case watch.end of
@@ -380,13 +405,20 @@ displayWatch ct watch =
 
                         Nothing ->
                             (ct - watch.start)
+
+        v =
+            case watch.view of
+                Just x ->
+                    toString x
+
+                Nothing ->
+                    "abs"
     in
-        col (action watch.id) "s6 flow-text" [ text ((toString (watch.id + 1)) ++ " | " ++ (displayTime time)) ]
+        col (action watch.id) "s6 flow-text" [ text ((toString (watch.id + 1)) ++ v ++ " | " ++ (displayTime time)) ]
 
 
 displayTimes : Model -> Html Msg
 displayTimes model =
-    -- div [] [ (text << toString) model.times ]
     List.map (displayWatch model.time) model.times
         |> div []
 
