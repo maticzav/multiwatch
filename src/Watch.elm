@@ -354,7 +354,7 @@ displayTime time =
 
         miliseconds =
             Time.inMilliseconds (time - (toFloat seconds) * Time.second)
-                |> floor
+                |> (flip (//) 10 << floor)
     in
         List.map toString [ minutes, seconds, miliseconds ]
             |> String.join " : "

@@ -8352,7 +8352,16 @@ var _user$project$Watch$displayTime = function (time) {
 	var seconds = _elm_lang$core$Basics$floor(
 		_elm_lang$core$Time$inSeconds(
 			time - (_elm_lang$core$Basics$toFloat(minutes) * _elm_lang$core$Time$minute)));
-	var miliseconds = _elm_lang$core$Basics$floor(
+	var miliseconds = function (_p0) {
+		return A3(
+			_elm_lang$core$Basics$flip,
+			F2(
+				function (x, y) {
+					return (x / y) | 0;
+				}),
+			10,
+			_elm_lang$core$Basics$floor(_p0));
+	}(
 		_elm_lang$core$Time$inMilliseconds(
 			time - (_elm_lang$core$Basics$toFloat(seconds) * _elm_lang$core$Time$second)));
 	return A2(
@@ -8366,60 +8375,60 @@ var _user$project$Watch$displayTime = function (time) {
 };
 var _user$project$Watch$displayAbsoluteTime = F2(
 	function (time, times) {
-		var _p0 = _elm_lang$core$List$head(
+		var _p1 = _elm_lang$core$List$head(
 			A2(
 				_elm_lang$core$List$sortBy,
 				function (_) {
 					return _.id;
 				},
 				times));
-		if (_p0.ctor === 'Just') {
+		if (_p1.ctor === 'Just') {
 			return _elm_lang$html$Html$text(
-				_user$project$Watch$displayTime(time - _p0._0.start));
+				_user$project$Watch$displayTime(time - _p1._0.start));
 		} else {
 			return _elm_lang$html$Html$text('Start');
 		}
 	});
 var _user$project$Watch$take2 = function (list) {
-	var _p1 = list;
-	if (_p1.ctor === '[]') {
+	var _p2 = list;
+	if (_p2.ctor === '[]') {
 		return _elm_lang$core$Maybe$Nothing;
 	} else {
-		if (_p1._1.ctor === '[]') {
+		if (_p2._1.ctor === '[]') {
 			return _elm_lang$core$Maybe$Nothing;
 		} else {
 			return _elm_lang$core$Maybe$Just(
-				{ctor: '_Tuple2', _0: _p1._0, _1: _p1._1._0});
+				{ctor: '_Tuple2', _0: _p2._0, _1: _p2._1._0});
 		}
 	}
 };
 var _user$project$Watch$isJust = function (myb) {
-	var _p2 = myb;
-	if (_p2.ctor === 'Just') {
+	var _p3 = myb;
+	if (_p3.ctor === 'Just') {
 		return true;
 	} else {
 		return false;
 	}
 };
-var _user$project$Watch$isNothing = function (_p3) {
+var _user$project$Watch$isNothing = function (_p4) {
 	return _elm_lang$core$Basics$not(
-		_user$project$Watch$isJust(_p3));
+		_user$project$Watch$isJust(_p4));
 };
 var _user$project$Watch$indexList = function (list) {
 	return _elm_lang$core$Basics$snd(
 		A3(
 			_elm_lang$core$List$foldr,
 			F2(
-				function ($new, _p4) {
-					var _p5 = _p4;
-					var _p6 = _p5._0;
+				function ($new, _p5) {
+					var _p6 = _p5;
+					var _p7 = _p6._0;
 					return {
 						ctor: '_Tuple2',
-						_0: _p6 + 1,
+						_0: _p7 + 1,
 						_1: A2(
 							_elm_lang$core$List_ops['::'],
-							{ctor: '_Tuple2', _0: _p6, _1: $new},
-							_p5._1)
+							{ctor: '_Tuple2', _0: _p7, _1: $new},
+							_p6._1)
 					};
 				}),
 			{
@@ -8435,9 +8444,9 @@ var _user$project$Watch$isEven = function (i) {
 		A2(_elm_lang$core$Basics$rem, i, 2),
 		0);
 };
-var _user$project$Watch$isOdd = function (_p7) {
+var _user$project$Watch$isOdd = function (_p8) {
 	return _elm_lang$core$Basics$not(
-		_user$project$Watch$isEven(_p7));
+		_user$project$Watch$isEven(_p8));
 };
 var _user$project$Watch_ops = _user$project$Watch_ops || {};
 _user$project$Watch_ops['=>'] = F2(
@@ -8543,8 +8552,8 @@ var _user$project$Watch$init = A2(
 		[]));
 var _user$project$Watch$update = F2(
 	function (msg, model) {
-		var _p8 = msg;
-		switch (_p8.ctor) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
 			case 'NoOp':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8554,7 +8563,7 @@ var _user$project$Watch$update = F2(
 			case 'Tick':
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
-					{time: _p8._0});
+					{time: _p9._0});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					newModel,
@@ -8564,7 +8573,7 @@ var _user$project$Watch$update = F2(
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
 					{
-						max_times: _elm_lang$core$Maybe$Just(_p8._0)
+						max_times: _elm_lang$core$Maybe$Just(_p9._0)
 					});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8579,11 +8588,11 @@ var _user$project$Watch$update = F2(
 					},
 					model.times);
 				var newTimes = function () {
-					var _p9 = model.max_times;
-					if (_p9.ctor === 'Just') {
+					var _p10 = model.max_times;
+					if (_p10.ctor === 'Just') {
 						return A2(
 							_elm_lang$core$List$drop,
-							(1 + _elm_lang$core$List$length(unfinished)) - _p9._0,
+							(1 + _elm_lang$core$List$length(unfinished)) - _p10._0,
 							A2(
 								_elm_lang$core$List_ops['::'],
 								A2(_user$project$Watch$newWatch, model.current_id, model.time),
@@ -8594,15 +8603,15 @@ var _user$project$Watch$update = F2(
 					}
 				}();
 				var max_id = function () {
-					var _p10 = _elm_lang$core$List$maximum(
+					var _p11 = _elm_lang$core$List$maximum(
 						A2(
 							_elm_lang$core$List$map,
 							function (_) {
 								return _.id;
 							},
 							newTimes));
-					if (_p10.ctor === 'Just') {
-						return _p10._0;
+					if (_p11.ctor === 'Just') {
+						return _p11._0;
 					} else {
 						return model.current_id;
 					}
@@ -8631,17 +8640,17 @@ var _user$project$Watch$update = F2(
 					},
 					model.times);
 				var newTimes = function () {
-					var _p11 = _elm_lang$core$List$head(
+					var _p12 = _elm_lang$core$List$head(
 						A2(
 							_elm_lang$core$List$sortBy,
 							function (_) {
 								return _.id;
 							},
 							unfinished));
-					if (_p11.ctor === 'Just') {
+					if (_p12.ctor === 'Just') {
 						return A2(
 							_elm_lang$core$List$map,
-							end(_p11._0.id),
+							end(_p12._0.id),
 							model.times);
 					} else {
 						return model.times;
@@ -8656,7 +8665,7 @@ var _user$project$Watch$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Lap':
-				var _p12 = _p8._0;
+				var _p13 = _p9._0;
 				var lap = F2(
 					function (id, watch) {
 						return _elm_lang$core$Native_Utils.eq(watch.id, id) ? _elm_lang$core$Native_Utils.update(
@@ -8677,7 +8686,7 @@ var _user$project$Watch$update = F2(
 					model.times);
 				var newTimes = A2(
 					_elm_lang$core$List$member,
-					_p12,
+					_p13,
 					A2(
 						_elm_lang$core$List$map,
 						function (_) {
@@ -8685,7 +8694,7 @@ var _user$project$Watch$update = F2(
 						},
 						unfinished)) ? A2(
 					_elm_lang$core$List$map,
-					lap(_p12),
+					lap(_p13),
 					model.times) : model.times;
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
@@ -8697,21 +8706,21 @@ var _user$project$Watch$update = F2(
 						[]));
 			case 'Display':
 				var nv = function (watch) {
-					var _p13 = watch.view;
-					if (_p13.ctor === 'Just') {
-						var _p14 = _p13._0;
+					var _p14 = watch.view;
+					if (_p14.ctor === 'Just') {
+						var _p15 = _p14._0;
 						return (_elm_lang$core$Native_Utils.cmp(
-							_p14 + 1,
-							_elm_lang$core$List$length(watch.laps)) > 0) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(_p14 + 1);
+							_p15 + 1,
+							_elm_lang$core$List$length(watch.laps)) > 0) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(_p15 + 1);
 					} else {
-						return function (_p15) {
+						return function (_p16) {
 							return _elm_lang$core$Basics$not(
-								_elm_lang$core$List$isEmpty(_p15));
+								_elm_lang$core$List$isEmpty(_p16));
 						}(watch.laps) ? _elm_lang$core$Maybe$Just(0) : _elm_lang$core$Maybe$Nothing;
 					}
 				};
 				var display = function (watch) {
-					return _elm_lang$core$Native_Utils.eq(watch.id, _p8._0) ? _elm_lang$core$Native_Utils.update(
+					return _elm_lang$core$Native_Utils.eq(watch.id, _p9._0) ? _elm_lang$core$Native_Utils.update(
 						watch,
 						{
 							view: nv(watch)
@@ -8740,21 +8749,21 @@ var _user$project$Watch$Lap = function (a) {
 var _user$project$Watch$displayWatch = F2(
 	function (ct, watch) {
 		var v = function () {
-			var _p16 = watch.end;
-			if (_p16.ctor === 'Just') {
-				var _p17 = watch.view;
-				if (_p17.ctor === 'Just') {
-					return _elm_lang$core$Basics$toString(_p17._0 + 1);
+			var _p17 = watch.end;
+			if (_p17.ctor === 'Just') {
+				var _p18 = watch.view;
+				if (_p18.ctor === 'Just') {
+					return _elm_lang$core$Basics$toString(_p18._0 + 1);
 				} else {
 					return '•';
 				}
 			} else {
-				return function (_p18) {
+				return function (_p19) {
 					return _elm_lang$core$Basics$not(
-						_elm_lang$core$List$isEmpty(_p18));
-				}(watch.laps) ? function (_p19) {
+						_elm_lang$core$List$isEmpty(_p19));
+				}(watch.laps) ? function (_p20) {
 					return _elm_lang$core$Basics$toString(
-						_elm_lang$core$List$length(_p19));
+						_elm_lang$core$List$length(_p20));
 				}(watch.laps) : '';
 			}
 		}();
@@ -8770,19 +8779,19 @@ var _user$project$Watch$displayWatch = F2(
 				_elm_lang$core$Native_List.fromArray(
 					[watch.end])));
 		var time = function () {
-			var _p20 = watch.view;
-			if (_p20.ctor === 'Just') {
-				var _p21 = _user$project$Watch$take2(
-					A2(_elm_lang$core$List$drop, _p20._0, laps));
-				if (_p21.ctor === 'Just') {
-					return _p21._0._1 - _p21._0._0;
+			var _p21 = watch.view;
+			if (_p21.ctor === 'Just') {
+				var _p22 = _user$project$Watch$take2(
+					A2(_elm_lang$core$List$drop, _p21._0, laps));
+				if (_p22.ctor === 'Just') {
+					return _p22._0._1 - _p22._0._0;
 				} else {
 					return 0;
 				}
 			} else {
-				var _p22 = watch.end;
-				if (_p22.ctor === 'Just') {
-					return _p22._0 - watch.start;
+				var _p23 = watch.end;
+				if (_p23.ctor === 'Just') {
+					return _p23._0 - watch.start;
 				} else {
 					return ct - watch.start;
 				}
@@ -8931,10 +8940,10 @@ var _user$project$Watch$view = function (model) {
 										]),
 									_elm_lang$core$Native_List.fromArray(
 										[
-											function (_p23) {
+											function (_p24) {
 											return _elm_lang$html$Html$text(
 												_elm_lang$core$Basics$toString(
-													_elm_lang$core$List$length(_p23)));
+													_elm_lang$core$List$length(_p24)));
 										}(unfinished)
 										]))
 								]))
@@ -8997,8 +9006,8 @@ var _user$project$Watch$view = function (model) {
 				]))
 		]);
 	var content = function () {
-		var _p24 = model.max_times;
-		if (_p24.ctor === 'Just') {
+		var _p25 = model.max_times;
+		if (_p25.ctor === 'Just') {
 			return app;
 		} else {
 			return setup;
