@@ -8363,7 +8363,7 @@ var _user$project$Watch$displayTime = function (time) {
 			_elm_lang$core$Basics$floor(_p0));
 	}(
 		_elm_lang$core$Time$inMilliseconds(
-			time - (_elm_lang$core$Basics$toFloat(seconds) * _elm_lang$core$Time$second)));
+			(time - (_elm_lang$core$Basics$toFloat(seconds) * _elm_lang$core$Time$second)) - (_elm_lang$core$Basics$toFloat(minutes) * _elm_lang$core$Time$minute)));
 	return A2(
 		_elm_lang$core$String$join,
 		' : ',
