@@ -8511,7 +8511,7 @@ var _user$project$Watch$button = F3(
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A2(_user$project$Watch_ops['=>'], color, true),
-							A2(_user$project$Watch_ops['=>'], 'btn btn-large', true)
+							A2(_user$project$Watch_ops['=>'], 'btn', true)
 						]))
 				]),
 			_elm_lang$core$Native_List.fromArray(
@@ -8842,7 +8842,7 @@ var _user$project$Watch$displayMaxTimesOption = function (i) {
 					_elm_lang$core$String$join,
 					' ',
 					_elm_lang$core$Native_List.fromArray(
-						['full-width', color])),
+						['full-width', 'btn-xlarge', color])),
 				_elm_lang$core$Basics$toString(i),
 				_user$project$Watch$Parallels(i))
 			]));
@@ -8967,7 +8967,7 @@ var _user$project$Watch$view = function (model) {
 							's6 no-pad',
 							_elm_lang$core$Native_List.fromArray(
 								[
-									A3(_user$project$Watch$button, 'white black-text full-width', 'Start', _user$project$Watch$Start)
+									A3(_user$project$Watch$button, 'btn-large white black-text full-width', 'Start', _user$project$Watch$Start)
 								])),
 							A3(
 							_user$project$Watch$col,
@@ -8975,7 +8975,7 @@ var _user$project$Watch$view = function (model) {
 							's6 no-pad',
 							_elm_lang$core$Native_List.fromArray(
 								[
-									A3(_user$project$Watch$button, 'black white-text full-width', 'Stop', _user$project$Watch$Stop)
+									A3(_user$project$Watch$button, 'btn-large black white-text full-width', 'Stop', _user$project$Watch$Stop)
 								]))
 						]))
 				]))

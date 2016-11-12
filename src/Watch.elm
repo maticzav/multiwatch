@@ -329,7 +329,7 @@ button color txt msg =
         , onClick msg
         , classList
             [ color => True
-            , "btn btn-large" => True
+            , "btn" => True
             ]
         ]
         [ text txt ]
@@ -437,7 +437,7 @@ displayMaxTimesOption i =
             else
                 "white black-text"
     in
-        col NoOp "s12" [ button (String.join " " [ "full-width", color ]) (toString i) (Parallels i) ]
+        col NoOp "s12" [ button (String.join " " [ "full-width", "btn-xlarge", color ]) (toString i) (Parallels i) ]
 
 
 
@@ -462,8 +462,8 @@ view model =
             , section "no-pad-bot" [ row "valign full-width center large-line" (List.map (displayWatch model.time) model.times) ]
             , section "bottom full-width no-pad-bot"
                 [ row "no-margin-bot"
-                    [ col NoOp "s6 no-pad" [ button "white black-text full-width" "Start" Start ]
-                    , col NoOp "s6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
+                    [ col NoOp "s6 no-pad" [ button "btn-large white black-text full-width" "Start" Start ]
+                    , col NoOp "s6 no-pad" [ button "btn-large black white-text full-width" "Stop" Stop ]
                     ]
                 ]
             ]
