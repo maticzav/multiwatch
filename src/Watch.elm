@@ -79,7 +79,6 @@ type Msg
     | Stop
     | Lap ID
     | Display ID
-    | Reset
 
 
 
@@ -296,9 +295,6 @@ update msg model =
             in
                 newModel ! []
 
-        Reset ->
-            init
-
 
 
 -- Material Elements ---------------------------------------------------------
@@ -451,6 +447,12 @@ view model =
         unfinished =
             List.filter (\t -> isNothing t.end) model.times
 
+        times : List (Html Msg)
+        times =
+            List.sortBy .id model.times
+                |> List.reverse
+                |> List.map (displayWatch model.time)
+
         app : List (Html Msg)
         app =
             [ section "valign-wrapper no-pad-bot"
@@ -459,7 +461,7 @@ view model =
                     , col NoOp "s6" [ p [ class "flow-text abs-time" ] [ (text << toString << List.length) unfinished ] ]
                     ]
                 ]
-            , section "no-pad-bot scroll-wrapper" [ row "valign full-width center large-line" (List.map (displayWatch model.time) model.times) ]
+            , section "no-pad-bot scroll-wrapper" [ row "valign full-width center large-line" times ]
             , section "bottom full-width no-pad-bot"
                 [ row "no-margin-bot"
                     [ col NoOp "s6 no-pad" [ button "btn-large white black-text full-width" "Start" Start ]

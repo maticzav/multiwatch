@@ -8534,22 +8534,6 @@ var _user$project$Watch$newWatch = F2(
 			_elm_lang$core$Maybe$Nothing,
 			_elm_lang$core$Maybe$Nothing);
 	});
-var _user$project$Watch$Model = F4(
-	function (a, b, c, d) {
-		return {current_id: a, time: b, times: c, parallels: d};
-	});
-var _user$project$Watch$defaultModel = A4(
-	_user$project$Watch$Model,
-	0,
-	0,
-	_elm_lang$core$Native_List.fromArray(
-		[]),
-	_elm_lang$core$Maybe$Nothing);
-var _user$project$Watch$init = A2(
-	_elm_lang$core$Platform_Cmd_ops['!'],
-	_user$project$Watch$defaultModel,
-	_elm_lang$core$Native_List.fromArray(
-		[]));
 var _user$project$Watch$update = F2(
 	function (msg, model) {
 		var _p9 = msg;
@@ -8703,7 +8687,7 @@ var _user$project$Watch$update = F2(
 					newModel,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
-			case 'Display':
+			default:
 				var nv = function (watch) {
 					var _p14 = watch.view;
 					if (_p14.ctor === 'Just') {
@@ -8734,11 +8718,24 @@ var _user$project$Watch$update = F2(
 					newModel,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
-			default:
-				return _user$project$Watch$init;
 		}
 	});
-var _user$project$Watch$Reset = {ctor: 'Reset'};
+var _user$project$Watch$Model = F4(
+	function (a, b, c, d) {
+		return {current_id: a, time: b, times: c, parallels: d};
+	});
+var _user$project$Watch$defaultModel = A4(
+	_user$project$Watch$Model,
+	0,
+	0,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Maybe$Nothing);
+var _user$project$Watch$init = A2(
+	_elm_lang$core$Platform_Cmd_ops['!'],
+	_user$project$Watch$defaultModel,
+	_elm_lang$core$Native_List.fromArray(
+		[]));
 var _user$project$Watch$Display = function (a) {
 	return {ctor: 'Display', _0: a};
 };
@@ -8880,6 +8877,16 @@ var _user$project$Watch$view = function (model) {
 				_user$project$Watch$displayParallelsOption,
 				_elm_lang$core$Native_List.range(1, 8)))
 		]);
+	var times = A2(
+		_elm_lang$core$List$map,
+		_user$project$Watch$displayWatch(model.time),
+		_elm_lang$core$List$reverse(
+			A2(
+				_elm_lang$core$List$sortBy,
+				function (_) {
+					return _.id;
+				},
+				model.times)));
 	var unfinished = A2(
 		_elm_lang$core$List$filter,
 		function (t) {
@@ -8943,13 +8950,7 @@ var _user$project$Watch$view = function (model) {
 			'no-pad-bot scroll-wrapper',
 			_elm_lang$core$Native_List.fromArray(
 				[
-					A2(
-					_user$project$Watch$row,
-					'valign full-width center large-line',
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$Watch$displayWatch(model.time),
-						model.times))
+					A2(_user$project$Watch$row, 'valign full-width center large-line', times)
 				])),
 			A2(
 			_user$project$Watch$section,

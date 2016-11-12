@@ -1,4 +1,9 @@
 
+::-webkit-scrollbar
+{
+    display: none;
+}
+
 html,
 body,
 #app
@@ -61,16 +66,19 @@ body,
 
 .scroll-wrapper
 {
-    height: 100%;
     position: relative;
+
     overflow-y: auto;
+
+    height: 100%;
     margin-bottom: 10px;
 }
 
 .scroll-wrapper > div
 {
-   position: absolute;
-   top: 0;
-   bottom: 0;
-   min-height:100px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    min-height: 100px;
 }
