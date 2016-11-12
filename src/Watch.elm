@@ -35,7 +35,7 @@ type alias Model =
     { current_id : ID
     , time : Time
     , times : List Watch
-    , max_times : Maybe Int
+    , parallels : Maybe Int
     }
 
 
@@ -74,7 +74,7 @@ init =
 type Msg
     = NoOp
     | Tick Time
-    | MaxTimes Int
+    | Parallels Int
     | Start
     | Stop
     | Lap ID
@@ -159,31 +159,30 @@ update msg model =
             in
                 newModel ! []
 
-        MaxTimes i ->
+        Parallels i ->
             let
                 newModel : Model
                 newModel =
                     { model
-                        | max_times = Just i
+                        | parallels = Just i
                     }
             in
                 newModel ! []
 
         Start ->
             let
-                --TODO: Remove firt unfinished added when starting new
                 unfinished : List Watch
                 unfinished =
                     List.filter (\t -> isNothing t.end) model.times
 
                 newTimes : List Watch
                 newTimes =
-                    case model.max_times of
-                        Just max_times ->
-                            List.drop (1 + List.length unfinished - max_times) (newWatch model.current_id model.time :: model.times)
+                    case model.parallels of
+                        Just parallels ->
+                            List.map (flip newWatch model.time) [model.current_id..(model.current_id + parallels - 1)] ++ model.times
 
                         Nothing ->
-                            []
+                            model.times
 
                 max_id : Int
                 max_id =
@@ -330,7 +329,7 @@ button color txt msg =
         , onClick msg
         , classList
             [ color => True
-            , "btn btn-xlarge" => True
+            , "btn btn-large" => True
             ]
         ]
         [ text txt ]
@@ -417,12 +416,6 @@ displayWatch ct watch =
         col (action watch.id) "s6 flow-text" [ text (String.join " " [ toString (watch.id + 1), v, "|", displayTime time ]) ]
 
 
-displayTimes : Model -> Html Msg
-displayTimes model =
-    List.map (displayWatch model.time) model.times
-        |> div []
-
-
 displayAbsoluteTime : Time -> List Watch -> Html Msg
 displayAbsoluteTime time times =
     case List.head (List.sortBy .id times) of
@@ -444,7 +437,7 @@ displayMaxTimesOption i =
             else
                 "white black-text"
     in
-        col NoOp "s12" [ button (String.join " " [ "full-width", color ]) (toString i) (MaxTimes i) ]
+        col NoOp "s12" [ button (String.join " " [ "full-width", color ]) (toString i) (Parallels i) ]
 
 
 
@@ -466,12 +459,11 @@ view model =
                     , col NoOp "s6" [ p [ class "flow-text abs-time" ] [ (text << toString << List.length) unfinished ] ]
                     ]
                 ]
-            , section "no-pad-bot" [ row "valign full-width center large-line" [ displayTimes model ] ]
+            , section "no-pad-bot" [ row "valign full-width center large-line" (List.map (displayWatch model.time) model.times) ]
             , section "bottom full-width no-pad-bot"
-                [ row "no-pad-bot no-margin-bot" [ col NoOp "s12 no-pad" [ button "black white-text full-width" "Reset" Reset ] ]
-                , row "no-margin-bot"
-                    [ col NoOp "s12 m12 l6 no-pad" [ button "white black-text full-width" "Start" Start ]
-                    , col NoOp "s12 m12 l6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
+                [ row "no-margin-bot"
+                    [ col NoOp "s6 no-pad" [ button "white black-text full-width" "Start" Start ]
+                    , col NoOp "s6 no-pad" [ button "black white-text full-width" "Stop" Stop ]
                     ]
                 ]
             ]
@@ -479,14 +471,14 @@ view model =
         setup : List (Html Msg)
         setup =
             [ section "valign-wrapper no-pad-bot white black-text"
-                [ row "valign center container" [ p [ class "flow-text" ] [ text "Pick the number of maximum times that are being watch at the same time." ] ]
+                [ row "valign center container" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
                 ]
-            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [1..20])
+            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [1..8])
             ]
 
         content : List (Html Msg)
         content =
-            case model.max_times of
+            case model.parallels of
                 Just _ ->
                     app
 

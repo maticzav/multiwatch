@@ -7,6 +7,11 @@ body,
     min-height: 100%;
 }
 
+.btn
+{
+   border-radius: 0;
+}
+
 
 .no-pad-bot
 {

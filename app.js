@@ -8511,7 +8511,7 @@ var _user$project$Watch$button = F3(
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A2(_user$project$Watch_ops['=>'], color, true),
-							A2(_user$project$Watch_ops['=>'], 'btn btn-xlarge', true)
+							A2(_user$project$Watch_ops['=>'], 'btn btn-large', true)
 						]))
 				]),
 			_elm_lang$core$Native_List.fromArray(
@@ -8536,7 +8536,7 @@ var _user$project$Watch$newWatch = F2(
 	});
 var _user$project$Watch$Model = F4(
 	function (a, b, c, d) {
-		return {current_id: a, time: b, times: c, max_times: d};
+		return {current_id: a, time: b, times: c, parallels: d};
 	});
 var _user$project$Watch$defaultModel = A4(
 	_user$project$Watch$Model,
@@ -8569,11 +8569,11 @@ var _user$project$Watch$update = F2(
 					newModel,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
-			case 'MaxTimes':
+			case 'Parallels':
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
 					{
-						max_times: _elm_lang$core$Maybe$Just(_p9._0)
+						parallels: _elm_lang$core$Maybe$Just(_p9._0)
 					});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8581,25 +8581,18 @@ var _user$project$Watch$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Start':
-				var unfinished = A2(
-					_elm_lang$core$List$filter,
-					function (t) {
-						return _user$project$Watch$isNothing(t.end);
-					},
-					model.times);
 				var newTimes = function () {
-					var _p10 = model.max_times;
+					var _p10 = model.parallels;
 					if (_p10.ctor === 'Just') {
 						return A2(
-							_elm_lang$core$List$drop,
-							(1 + _elm_lang$core$List$length(unfinished)) - _p10._0,
+							_elm_lang$core$Basics_ops['++'],
 							A2(
-								_elm_lang$core$List_ops['::'],
-								A2(_user$project$Watch$newWatch, model.current_id, model.time),
-								model.times));
+								_elm_lang$core$List$map,
+								A2(_elm_lang$core$Basics$flip, _user$project$Watch$newWatch, model.time),
+								_elm_lang$core$Native_List.range(model.current_id, (model.current_id + _p10._0) - 1)),
+							model.times);
 					} else {
-						return _elm_lang$core$Native_List.fromArray(
-							[]);
+						return model.times;
 					}
 				}();
 				var max_id = function () {
@@ -8619,6 +8612,12 @@ var _user$project$Watch$update = F2(
 				var newModel = _elm_lang$core$Native_Utils.update(
 					model,
 					{current_id: 1 + max_id, times: newTimes});
+				var unfinished = A2(
+					_elm_lang$core$List$filter,
+					function (t) {
+						return _user$project$Watch$isNothing(t.end);
+					},
+					model.times);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					newModel,
@@ -8817,20 +8816,10 @@ var _user$project$Watch$displayWatch = F2(
 							])))
 				]));
 	});
-var _user$project$Watch$displayTimes = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		A2(
-			_elm_lang$core$List$map,
-			_user$project$Watch$displayWatch(model.time),
-			model.times));
-};
 var _user$project$Watch$Stop = {ctor: 'Stop'};
 var _user$project$Watch$Start = {ctor: 'Start'};
-var _user$project$Watch$MaxTimes = function (a) {
-	return {ctor: 'MaxTimes', _0: a};
+var _user$project$Watch$Parallels = function (a) {
+	return {ctor: 'Parallels', _0: a};
 };
 var _user$project$Watch$Tick = function (a) {
 	return {ctor: 'Tick', _0: a};
@@ -8855,7 +8844,7 @@ var _user$project$Watch$displayMaxTimesOption = function (i) {
 					_elm_lang$core$Native_List.fromArray(
 						['full-width', color])),
 				_elm_lang$core$Basics$toString(i),
-				_user$project$Watch$MaxTimes(i))
+				_user$project$Watch$Parallels(i))
 			]));
 };
 var _user$project$Watch$view = function (model) {
@@ -8879,7 +8868,7 @@ var _user$project$Watch$view = function (model) {
 								]),
 							_elm_lang$core$Native_List.fromArray(
 								[
-									_elm_lang$html$Html$text('Pick the number of maximum times that are being watch at the same time.')
+									_elm_lang$html$Html$text('How many people start at the same time?')
 								]))
 						]))
 				])),
@@ -8889,7 +8878,7 @@ var _user$project$Watch$view = function (model) {
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$Watch$displayMaxTimesOption,
-				_elm_lang$core$Native_List.range(1, 20)))
+				_elm_lang$core$Native_List.range(1, 8)))
 		]);
 	var unfinished = A2(
 		_elm_lang$core$List$filter,
@@ -8957,10 +8946,10 @@ var _user$project$Watch$view = function (model) {
 					A2(
 					_user$project$Watch$row,
 					'valign full-width center large-line',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_user$project$Watch$displayTimes(model)
-						]))
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Watch$displayWatch(model.time),
+						model.times))
 				])),
 			A2(
 			_user$project$Watch$section,
@@ -8969,27 +8958,13 @@ var _user$project$Watch$view = function (model) {
 				[
 					A2(
 					_user$project$Watch$row,
-					'no-pad-bot no-margin-bot',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$NoOp,
-							's12 no-pad',
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A3(_user$project$Watch$button, 'black white-text full-width', 'Reset', _user$project$Watch$Reset)
-								]))
-						])),
-					A2(
-					_user$project$Watch$row,
 					'no-margin-bot',
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A3(
 							_user$project$Watch$col,
 							_user$project$Watch$NoOp,
-							's12 m12 l6 no-pad',
+							's6 no-pad',
 							_elm_lang$core$Native_List.fromArray(
 								[
 									A3(_user$project$Watch$button, 'white black-text full-width', 'Start', _user$project$Watch$Start)
@@ -8997,7 +8972,7 @@ var _user$project$Watch$view = function (model) {
 							A3(
 							_user$project$Watch$col,
 							_user$project$Watch$NoOp,
-							's12 m12 l6 no-pad',
+							's6 no-pad',
 							_elm_lang$core$Native_List.fromArray(
 								[
 									A3(_user$project$Watch$button, 'black white-text full-width', 'Stop', _user$project$Watch$Stop)
@@ -9006,7 +8981,7 @@ var _user$project$Watch$view = function (model) {
 				]))
 		]);
 	var content = function () {
-		var _p25 = model.max_times;
+		var _p25 = model.parallels;
 		if (_p25.ctor === 'Just') {
 			return app;
 		} else {
