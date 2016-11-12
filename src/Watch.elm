@@ -427,8 +427,8 @@ displayAbsoluteTime time times =
             text "Start"
 
 
-displayMaxTimesOption : Int -> Html Msg
-displayMaxTimesOption i =
+displayParallelsOption : Int -> Html Msg
+displayParallelsOption i =
     let
         color : String
         color =
@@ -459,7 +459,7 @@ view model =
                     , col NoOp "s6" [ p [ class "flow-text abs-time" ] [ (text << toString << List.length) unfinished ] ]
                     ]
                 ]
-            , section "no-pad-bot" [ row "valign full-width center large-line" (List.map (displayWatch model.time) model.times) ]
+            , section "no-pad-bot scroll-wrapper" [ row "valign full-width center large-line" (List.map (displayWatch model.time) model.times) ]
             , section "bottom full-width no-pad-bot"
                 [ row "no-margin-bot"
                     [ col NoOp "s6 no-pad" [ button "btn-large white black-text full-width" "Start" Start ]
@@ -473,7 +473,7 @@ view model =
             [ section "valign-wrapper no-pad-bot white black-text"
                 [ row "valign center container" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
                 ]
-            , section "no-pad-top no-pad-bot" (List.map displayMaxTimesOption [1..8])
+            , section "no-pad-top no-pad-bot" (List.map displayParallelsOption [1..8])
             ]
 
         content : List (Html Msg)

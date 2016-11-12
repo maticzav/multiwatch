@@ -8828,7 +8828,7 @@ var _user$project$Watch$subscriptions = function (model) {
 	return A2(_elm_lang$core$Time$every, _elm_lang$core$Time$millisecond, _user$project$Watch$Tick);
 };
 var _user$project$Watch$NoOp = {ctor: 'NoOp'};
-var _user$project$Watch$displayMaxTimesOption = function (i) {
+var _user$project$Watch$displayParallelsOption = function (i) {
 	var color = _user$project$Watch$isOdd(i) ? 'black white-text' : 'white black-text';
 	return A3(
 		_user$project$Watch$col,
@@ -8877,7 +8877,7 @@ var _user$project$Watch$view = function (model) {
 			'no-pad-top no-pad-bot',
 			A2(
 				_elm_lang$core$List$map,
-				_user$project$Watch$displayMaxTimesOption,
+				_user$project$Watch$displayParallelsOption,
 				_elm_lang$core$Native_List.range(1, 8)))
 		]);
 	var unfinished = A2(
@@ -8940,7 +8940,7 @@ var _user$project$Watch$view = function (model) {
 				])),
 			A2(
 			_user$project$Watch$section,
-			'no-pad-bot',
+			'no-pad-bot scroll-wrapper',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(

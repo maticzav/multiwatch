@@ -3,28 +3,18 @@ html,
 body,
 #app
 {
+    width: 100%;
     height: 100%;
     min-height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .btn
 {
-   border-radius: 0;
+    border-radius: 0;
 }
 
-
-.no-pad-bot
-{
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-
-.no-pad-top
-{
-    margin-top: 0;
-    padding-top: 0;
-}
 .no-pad
 {
     padding: 0 !important;
@@ -50,7 +40,7 @@ body,
 
 .bottom
 {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
 }
@@ -67,4 +57,20 @@ body,
 .large-line
 {
     line-height: 48px;
+}
+
+.scroll-wrapper
+{
+    height: 100%;
+    position: relative;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.scroll-wrapper > div
+{
+   position: absolute;
+   top: 0;
+   bottom: 0;
+   min-height:100px;
 }
