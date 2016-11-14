@@ -8923,7 +8923,10 @@ var _user$project$Watch$displaySwitchOptions = F2(
 		return A3(
 			_user$project$Watch$col,
 			_user$project$Watch$NoOp,
-			's12',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				's',
+				_elm_lang$core$Basics$toString((12 / model.parallels) | 0)),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A3(
@@ -8976,7 +8979,8 @@ var _user$project$Watch$view = function (model) {
 			A2(
 				_elm_lang$core$List$map,
 				_user$project$Watch$displayParallelsOption(model),
-				_elm_lang$core$Native_List.range(1, 8))),
+				_elm_lang$core$Native_List.fromArray(
+					[1, 2, 3, 4, 6]))),
 			A2(
 			_user$project$Watch$section,
 			'no-pad-top no-pad-bot',
@@ -9032,24 +9036,30 @@ var _user$project$Watch$view = function (model) {
 			A2(
 			_user$project$Watch$section,
 			'no-pad-top no-pad-bot',
-			A2(
-				_elm_lang$core$List$map,
-				_user$project$Watch$displaySwitchOptions(model),
-				_elm_lang$core$List$reverse(
+			_elm_lang$core$Native_List.fromArray(
+				[
 					A2(
-						_elm_lang$core$List$sortBy,
-						function (_) {
-							return _.id;
-						},
-						A2(
-							_elm_lang$core$List$filter,
-							function (_p27) {
-								return _user$project$Watch$isNothing(
-									function (_) {
-										return _.end;
-									}(_p27));
-							},
-							model.times))))),
+					_user$project$Watch$row,
+					'',
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Watch$displaySwitchOptions(model),
+						_elm_lang$core$List$reverse(
+							A2(
+								_elm_lang$core$List$sortBy,
+								function (_) {
+									return _.id;
+								},
+								A2(
+									_elm_lang$core$List$filter,
+									function (_p27) {
+										return _user$project$Watch$isNothing(
+											function (_) {
+												return _.end;
+											}(_p27));
+									},
+									model.times)))))
+				])),
 			A2(
 			_user$project$Watch$section,
 			'no-pad-top no-pad-bot',

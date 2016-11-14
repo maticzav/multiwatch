@@ -520,7 +520,7 @@ displaySwitchOptions model w =
             else
                 "white black-text"
     in
-        col NoOp "s12" [ button (String.join " " [ "full-width", "btn-xlarge", color ]) [ (text << toString) (w.id + 1) ] (Switch model.switch w.id) ]
+        col NoOp ("s" ++ (toString <| 12 // model.parallels)) [ button (String.join " " [ "full-width", "btn-xlarge", color ]) [ (text << toString) (w.id + 1) ] (Switch model.switch w.id) ]
 
 
 
@@ -562,7 +562,9 @@ view model =
             [ section "valign-wrapper no-pad-bot white black-text"
                 [ row "valign center container" [ p [ class "flow-text" ] [ displaySwitchText model ] ]
                 ]
-            , section "no-pad-top no-pad-bot" (List.map (displaySwitchOptions model) (List.reverse <| List.sortBy .id <| List.filter (isNothing << .end) model.times))
+            , section "no-pad-top no-pad-bot"
+                [ row "" (List.map (displaySwitchOptions model) (List.reverse <| List.sortBy .id <| List.filter (isNothing << .end) model.times))
+                ]
             , section "no-pad-top no-pad-bot"
                 [ row "center" [ col NoOp "s12 no-pad" [ button "btn btn-xlarge white black-text full-width" [ icon (NoOp) "center" "clear" ] (SwitchSreen Stopwatch) ] ] ]
             ]
@@ -572,7 +574,7 @@ view model =
             [ section "valign-wrapper no-pad-bot white black-text"
                 [ row "valign center container" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
                 ]
-            , section "no-pad-top no-pad-bot" (List.map (displayParallelsOption model) [1..8])
+            , section "no-pad-top no-pad-bot" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 6 ])
             , section "no-pad-top no-pad-bot"
                 [ row "center" [ col NoOp "s12 no-pad" [ button "btn btn-xlarge white black-text full-width" [ icon (NoOp) "center" "clear" ] (SwitchSreen Stopwatch) ] ] ]
             ]
