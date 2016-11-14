@@ -8785,11 +8785,12 @@ var _user$project$Watch$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			default:
+				var newModel = _elm_lang$core$Native_Utils.update(
+					model,
+					{screen: _p7._0, $switch: _elm_lang$core$Maybe$Nothing});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{screen: _p7._0}),
+					newModel,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 		}

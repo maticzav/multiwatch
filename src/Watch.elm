@@ -342,7 +342,15 @@ update msg model =
                 newModel ! []
 
         SwitchSreen screen ->
-            { model | screen = screen } ! []
+            let
+                newModel : Model
+                newModel =
+                    { model
+                        | screen = screen
+                        , switch = Nothing
+                    }
+            in
+                newModel ! []
 
 
 
