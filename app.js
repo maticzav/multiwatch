@@ -8346,6 +8346,10 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _user$project$Watch$about = function (model) {
+	return _elm_lang$core$Native_List.fromArray(
+		[]);
+};
 var _user$project$Watch$displaySwitchText = function (model) {
 	var _p0 = model.$switch;
 	if (_p0.ctor === 'Just') {
@@ -8517,12 +8521,26 @@ var _user$project$Watch$button = F3(
 					_elm_lang$html$Html_Attributes$classList(
 					_elm_lang$core$Native_List.fromArray(
 						[
-							A2(_user$project$Watch_ops['=>'], color, true),
-							A2(_user$project$Watch_ops['=>'], 'btn', true)
+							A2(_user$project$Watch_ops['=>'], color, true)
 						]))
 				]),
 			content);
 	});
+var _user$project$Watch$divider = function (styl) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html_Attributes$classList(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(_user$project$Watch_ops['=>'], 'divider', true),
+						A2(_user$project$Watch_ops['=>'], styl, true)
+					]))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
 var _user$project$Watch$Watch = F5(
 	function (a, b, c, d, e) {
 		return {id: a, start: b, laps: c, end: d, view: e};
@@ -8538,51 +8556,61 @@ var _user$project$Watch$newWatch = F2(
 			_elm_lang$core$Maybe$Nothing,
 			_elm_lang$core$Maybe$Nothing);
 	});
+var _user$project$Watch$Settings = F2(
+	function (a, b) {
+		return {startLstopR: a, parallels: b};
+	});
 var _user$project$Watch$Model = F6(
 	function (a, b, c, d, e, f) {
-		return {screen: a, current_id: b, time: c, times: d, parallels: e, $switch: f};
+		return {screen: a, current_id: b, time: c, times: d, $switch: e, settings: f};
 	});
-var _user$project$Watch$About = {ctor: 'About'};
-var _user$project$Watch$Settings = {ctor: 'Settings'};
-var _user$project$Watch$OrderSwitch = {ctor: 'OrderSwitch'};
-var _user$project$Watch$Stopwatch = {ctor: 'Stopwatch'};
+var _user$project$Watch$AboutScreen = {ctor: 'AboutScreen'};
+var _user$project$Watch$SettingsScreen = {ctor: 'SettingsScreen'};
+var _user$project$Watch$SwitchScreen = {ctor: 'SwitchScreen'};
+var _user$project$Watch$StopwatchScreen = {ctor: 'StopwatchScreen'};
 var _user$project$Watch$defaultModel = A6(
 	_user$project$Watch$Model,
-	_user$project$Watch$Stopwatch,
+	_user$project$Watch$StopwatchScreen,
 	0,
 	0,
 	_elm_lang$core$Native_List.fromArray(
 		[]),
-	3,
-	_elm_lang$core$Maybe$Nothing);
+	_elm_lang$core$Maybe$Nothing,
+	A2(_user$project$Watch$Settings, false, 3));
 var _user$project$Watch$init = A2(
 	_elm_lang$core$Platform_Cmd_ops['!'],
 	_user$project$Watch$defaultModel,
 	_elm_lang$core$Native_List.fromArray(
 		[]));
 var _user$project$Watch$update = F2(
-	function (msg, model) {
-		var _p7 = msg;
-		switch (_p7.ctor) {
+	function (msg, _p7) {
+		var _p8 = _p7;
+		var _p21 = _p8.settings;
+		var _p20 = _p8;
+		var _p9 = msg;
+		switch (_p9.ctor) {
 			case 'NoOp':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
+					_p20,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Tick':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					_elm_lang$core$Native_Utils.update(
-						model,
-						{time: _p7._0}),
+						_p20,
+						{time: _p9._0}),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Parallels':
+				var newSettings = _elm_lang$core$Native_Utils.update(
+					_p21,
+					{parallels: _p9._0});
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{
-						parallels: _p7._0,
+						settings: newSettings,
 						current_id: 0,
 						times: _elm_lang$core$Native_List.fromArray(
 							[])
@@ -8597,32 +8625,32 @@ var _user$project$Watch$update = F2(
 					_elm_lang$core$Basics_ops['++'],
 					A2(
 						_elm_lang$core$List$map,
-						A2(_elm_lang$core$Basics$flip, _user$project$Watch$newWatch, model.time),
-						_elm_lang$core$Native_List.range(model.current_id, (model.current_id + model.parallels) - 1)),
-					model.times);
+						A2(_elm_lang$core$Basics$flip, _user$project$Watch$newWatch, _p20.time),
+						_elm_lang$core$Native_List.range(_p20.current_id, (_p20.current_id + _p21.parallels) - 1)),
+					_p20.times);
 				var max_id = function () {
-					var _p8 = _elm_lang$core$List$maximum(
+					var _p10 = _elm_lang$core$List$maximum(
 						A2(
 							_elm_lang$core$List$map,
 							function (_) {
 								return _.id;
 							},
 							newTimes));
-					if (_p8.ctor === 'Just') {
-						return _p8._0;
+					if (_p10.ctor === 'Just') {
+						return _p10._0;
 					} else {
-						return model.current_id;
+						return _p20.current_id;
 					}
 				}();
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{current_id: 1 + max_id, times: newTimes});
 				var unfinished = A2(
 					_elm_lang$core$List$filter,
 					function (t) {
 						return _user$project$Watch$isNothing(t.end);
 					},
-					model.times);
+					_p20.times);
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					newModel,
@@ -8634,7 +8662,7 @@ var _user$project$Watch$update = F2(
 						return _elm_lang$core$Native_Utils.eq(watch.id, id) ? _elm_lang$core$Native_Utils.update(
 							watch,
 							{
-								end: _elm_lang$core$Maybe$Just(model.time)
+								end: _elm_lang$core$Maybe$Just(_p20.time)
 							}) : watch;
 					});
 				var unfinished = A2(
@@ -8642,34 +8670,49 @@ var _user$project$Watch$update = F2(
 					function (t) {
 						return _user$project$Watch$isNothing(t.end);
 					},
-					model.times);
+					_p20.times);
 				var newTimes = function () {
-					var _p9 = _elm_lang$core$List$head(
+					var _p11 = _elm_lang$core$List$head(
 						A2(
 							_elm_lang$core$List$sortBy,
 							function (_) {
 								return _.id;
 							},
 							unfinished));
-					if (_p9.ctor === 'Just') {
+					if (_p11.ctor === 'Just') {
 						return A2(
 							_elm_lang$core$List$map,
-							end(_p9._0.id),
-							model.times);
+							end(_p11._0.id),
+							_p20.times);
 					} else {
-						return model.times;
+						return _p20.times;
 					}
 				}();
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{times: newTimes});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					newModel,
 					_elm_lang$core$Native_List.fromArray(
 						[]));
+			case 'Clear':
+				var newModel = _elm_lang$core$Native_Utils.update(
+					_p20,
+					{
+						times: _elm_lang$core$Native_List.fromArray(
+							[]),
+						current_id: 0,
+						$switch: _elm_lang$core$Maybe$Nothing,
+						screen: _user$project$Watch$StopwatchScreen
+					});
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					newModel,
+					_elm_lang$core$Native_List.fromArray(
+						[]));
 			case 'Lap':
-				var _p10 = _p7._0;
+				var _p12 = _p9._0;
 				var lap = F2(
 					function (id, watch) {
 						return _elm_lang$core$Native_Utils.eq(watch.id, id) ? _elm_lang$core$Native_Utils.update(
@@ -8679,7 +8722,7 @@ var _user$project$Watch$update = F2(
 									_elm_lang$core$Basics_ops['++'],
 									watch.laps,
 									_elm_lang$core$Native_List.fromArray(
-										[model.time]))
+										[_p20.time]))
 							}) : watch;
 					});
 				var unfinished = A2(
@@ -8687,10 +8730,10 @@ var _user$project$Watch$update = F2(
 					function (t) {
 						return _user$project$Watch$isNothing(t.end);
 					},
-					model.times);
+					_p20.times);
 				var newTimes = A2(
 					_elm_lang$core$List$member,
-					_p10,
+					_p12,
 					A2(
 						_elm_lang$core$List$map,
 						function (_) {
@@ -8698,10 +8741,10 @@ var _user$project$Watch$update = F2(
 						},
 						unfinished)) ? A2(
 					_elm_lang$core$List$map,
-					lap(_p10),
-					model.times) : model.times;
+					lap(_p12),
+					_p20.times) : _p20.times;
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{times: newTimes});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8710,29 +8753,29 @@ var _user$project$Watch$update = F2(
 						[]));
 			case 'Display':
 				var nv = function (watch) {
-					var _p11 = watch.view;
-					if (_p11.ctor === 'Just') {
-						var _p12 = _p11._0;
+					var _p13 = watch.view;
+					if (_p13.ctor === 'Just') {
+						var _p14 = _p13._0;
 						return (_elm_lang$core$Native_Utils.cmp(
-							_p12 + 1,
-							_elm_lang$core$List$length(watch.laps)) > 0) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(_p12 + 1);
+							_p14 + 1,
+							_elm_lang$core$List$length(watch.laps)) > 0) ? _elm_lang$core$Maybe$Nothing : _elm_lang$core$Maybe$Just(_p14 + 1);
 					} else {
-						return function (_p13) {
+						return function (_p15) {
 							return _elm_lang$core$Basics$not(
-								_elm_lang$core$List$isEmpty(_p13));
+								_elm_lang$core$List$isEmpty(_p15));
 						}(watch.laps) ? _elm_lang$core$Maybe$Just(0) : _elm_lang$core$Maybe$Nothing;
 					}
 				};
 				var display = function (watch) {
-					return _elm_lang$core$Native_Utils.eq(watch.id, _p7._0) ? _elm_lang$core$Native_Utils.update(
+					return _elm_lang$core$Native_Utils.eq(watch.id, _p9._0) ? _elm_lang$core$Native_Utils.update(
 						watch,
 						{
 							view: nv(watch)
 						}) : watch;
 				};
-				var newTimes = A2(_elm_lang$core$List$map, display, model.times);
+				var newTimes = A2(_elm_lang$core$List$map, display, _p20.times);
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{times: newTimes});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8740,21 +8783,21 @@ var _user$project$Watch$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'Switch':
-				var _p17 = _p7._1;
+				var _p19 = _p9._1;
 				var newScreen = function () {
-					var _p14 = model.$switch;
-					if (_p14.ctor === 'Just') {
-						return _user$project$Watch$Stopwatch;
+					var _p16 = _p20.$switch;
+					if (_p16.ctor === 'Just') {
+						return _user$project$Watch$StopwatchScreen;
 					} else {
-						return model.screen;
+						return _p20.screen;
 					}
 				}();
 				var newSwitch = function () {
-					var _p15 = model.$switch;
-					if (_p15.ctor === 'Just') {
+					var _p17 = _p20.$switch;
+					if (_p17.ctor === 'Just') {
 						return _elm_lang$core$Maybe$Nothing;
 					} else {
-						return _elm_lang$core$Maybe$Just(_p17);
+						return _elm_lang$core$Maybe$Just(_p19);
 					}
 				}();
 				var $switch = F3(
@@ -8766,18 +8809,18 @@ var _user$project$Watch$update = F2(
 							{id: fs})) : w;
 					});
 				var newTimes = function () {
-					var _p16 = model.$switch;
-					if (_p16.ctor === 'Just') {
+					var _p18 = _p20.$switch;
+					if (_p18.ctor === 'Just') {
 						return A2(
 							_elm_lang$core$List$map,
-							A2($switch, _p16._0, _p17),
-							model.times);
+							A2($switch, _p18._0, _p19),
+							_p20.times);
 					} else {
-						return model.times;
+						return _p20.times;
 					}
 				}();
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
+					_p20,
 					{times: newTimes, $switch: newSwitch, screen: newScreen});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8786,8 +8829,8 @@ var _user$project$Watch$update = F2(
 						[]));
 			default:
 				var newModel = _elm_lang$core$Native_Utils.update(
-					model,
-					{screen: _p7._0, $switch: _elm_lang$core$Maybe$Nothing});
+					_p20,
+					{screen: _p9._0, $switch: _elm_lang$core$Maybe$Nothing});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
 					newModel,
@@ -8811,21 +8854,21 @@ var _user$project$Watch$Lap = function (a) {
 var _user$project$Watch$displayWatch = F2(
 	function (ct, watch) {
 		var v = function () {
-			var _p18 = watch.end;
-			if (_p18.ctor === 'Just') {
-				var _p19 = watch.view;
-				if (_p19.ctor === 'Just') {
-					return _elm_lang$core$Basics$toString(_p19._0 + 1);
+			var _p22 = watch.end;
+			if (_p22.ctor === 'Just') {
+				var _p23 = watch.view;
+				if (_p23.ctor === 'Just') {
+					return _elm_lang$core$Basics$toString(_p23._0 + 1);
 				} else {
 					return '•';
 				}
 			} else {
-				return function (_p20) {
+				return function (_p24) {
 					return _elm_lang$core$Basics$not(
-						_elm_lang$core$List$isEmpty(_p20));
-				}(watch.laps) ? function (_p21) {
+						_elm_lang$core$List$isEmpty(_p24));
+				}(watch.laps) ? function (_p25) {
 					return _elm_lang$core$Basics$toString(
-						_elm_lang$core$List$length(_p21));
+						_elm_lang$core$List$length(_p25));
 				}(watch.laps) : '';
 			}
 		}();
@@ -8841,19 +8884,19 @@ var _user$project$Watch$displayWatch = F2(
 				_elm_lang$core$Native_List.fromArray(
 					[watch.end])));
 		var time = function () {
-			var _p22 = watch.view;
-			if (_p22.ctor === 'Just') {
-				var _p23 = _user$project$Watch$take2(
-					A2(_elm_lang$core$List$drop, _p22._0, laps));
-				if (_p23.ctor === 'Just') {
-					return _p23._0._1 - _p23._0._0;
+			var _p26 = watch.view;
+			if (_p26.ctor === 'Just') {
+				var _p27 = _user$project$Watch$take2(
+					A2(_elm_lang$core$List$drop, _p26._0, laps));
+				if (_p27.ctor === 'Just') {
+					return _p27._0._1 - _p27._0._0;
 				} else {
 					return 0;
 				}
 			} else {
-				var _p24 = watch.end;
-				if (_p24.ctor === 'Just') {
-					return _p24._0 - watch.start;
+				var _p28 = watch.end;
+				if (_p28.ctor === 'Just') {
+					return _p28._0 - watch.start;
 				} else {
 					return ct - watch.start;
 				}
@@ -8879,6 +8922,7 @@ var _user$project$Watch$displayWatch = F2(
 							])))
 				]));
 	});
+var _user$project$Watch$Clear = {ctor: 'Clear'};
 var _user$project$Watch$Stop = {ctor: 'Stop'};
 var _user$project$Watch$Start = {ctor: 'Start'};
 var _user$project$Watch$Parallels = function (a) {
@@ -8893,11 +8937,11 @@ var _user$project$Watch$subscriptions = function (model) {
 var _user$project$Watch$NoOp = {ctor: 'NoOp'};
 var _user$project$Watch$displayParallelsOption = F2(
 	function (model, i) {
-		var color = _elm_lang$core$Native_Utils.eq(i, model.parallels) ? 'red white-text' : (_user$project$Watch$isOdd(i) ? 'black white-text' : 'white black-text');
+		var color = _elm_lang$core$Native_Utils.eq(i, model.settings.parallels) ? 'red white-text' : 'white black-text';
 		return A3(
 			_user$project$Watch$col,
 			_user$project$Watch$NoOp,
-			's12',
+			's2',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A3(
@@ -8906,12 +8950,12 @@ var _user$project$Watch$displayParallelsOption = F2(
 						_elm_lang$core$String$join,
 						' ',
 						_elm_lang$core$Native_List.fromArray(
-							['full-width', 'btn-xlarge', color])),
+							['center', 'btn-floating', color])),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							function (_p25) {
+							function (_p29) {
 							return _elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(_p25));
+								_elm_lang$core$Basics$toString(_p29));
 						}(i)
 						]),
 					_user$project$Watch$Parallels(i))
@@ -8919,175 +8963,81 @@ var _user$project$Watch$displayParallelsOption = F2(
 	});
 var _user$project$Watch$displaySwitchOptions = F2(
 	function (model, w) {
-		var color = _user$project$Watch$isOdd(w.id) ? 'black white-text' : 'white black-text';
+		var colSize = A2(
+			_elm_lang$core$String$join,
+			'',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					's',
+					_elm_lang$core$Basics$toString((12 / model.settings.parallels) | 0)
+				]));
+		var color = function () {
+			var _p30 = model.$switch;
+			if (_p30.ctor === 'Just') {
+				return _elm_lang$core$Native_Utils.eq(_p30._0, w.id) ? 'blue white-text' : 'white black-text';
+			} else {
+				return 'white black-text';
+			}
+		}();
+		var btnStyle = A2(
+			_elm_lang$core$String$join,
+			' ',
+			_elm_lang$core$Native_List.fromArray(
+				['btn-floating', color]));
 		return A3(
 			_user$project$Watch$col,
 			_user$project$Watch$NoOp,
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				's',
-				_elm_lang$core$Basics$toString((12 / model.parallels) | 0)),
+			colSize,
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A3(
 					_user$project$Watch$button,
-					A2(
-						_elm_lang$core$String$join,
-						' ',
-						_elm_lang$core$Native_List.fromArray(
-							['full-width', 'btn-xlarge', color])),
+					btnStyle,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							function (_p26) {
+							function (_p31) {
 							return _elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(_p26));
+								_elm_lang$core$Basics$toString(_p31));
 						}(w.id + 1)
 						]),
 					A2(_user$project$Watch$Switch, model.$switch, w.id))
 				]));
 	});
-var _user$project$Watch$view = function (model) {
-	var about = _elm_lang$core$Native_List.fromArray(
-		[]);
-	var settings = _elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_user$project$Watch$section,
-			'valign-wrapper no-pad-bot white black-text',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'valign center container',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(
-							_elm_lang$html$Html$p,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html_Attributes$class('flow-text')
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html$text('How many people start at the same time?')
-								]))
-						]))
-				])),
-			A2(
-			_user$project$Watch$section,
-			'no-pad-top no-pad-bot',
-			A2(
-				_elm_lang$core$List$map,
-				_user$project$Watch$displayParallelsOption(model),
+var _user$project$Watch$stopwatch = function (model) {
+	var navButtons = (model.settings.startLstopR ? _elm_lang$core$Basics$identity : _elm_lang$core$List$reverse)(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A3(
+				_user$project$Watch$col,
+				_user$project$Watch$NoOp,
+				's6 no-pad',
 				_elm_lang$core$Native_List.fromArray(
-					[1, 2, 3, 4, 6]))),
-			A2(
-			_user$project$Watch$section,
-			'no-pad-top no-pad-bot',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'center',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$NoOp,
-							's12 no-pad',
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A3(
-									_user$project$Watch$button,
-									'btn btn-xlarge white black-text full-width',
-									_elm_lang$core$Native_List.fromArray(
-										[
-											A3(_user$project$Watch$icon, _user$project$Watch$NoOp, 'center', 'clear')
-										]),
-									_user$project$Watch$SwitchSreen(_user$project$Watch$Stopwatch))
-								]))
-						]))
-				]))
-		]);
-	var $switch = _elm_lang$core$Native_List.fromArray(
-		[
-			A2(
-			_user$project$Watch$section,
-			'valign-wrapper no-pad-bot white black-text',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'valign center container',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A2(
-							_elm_lang$html$Html$p,
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_elm_lang$html$Html_Attributes$class('flow-text')
-								]),
-							_elm_lang$core$Native_List.fromArray(
-								[
-									_user$project$Watch$displaySwitchText(model)
-								]))
-						]))
-				])),
-			A2(
-			_user$project$Watch$section,
-			'no-pad-top no-pad-bot',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'',
-					A2(
-						_elm_lang$core$List$map,
-						_user$project$Watch$displaySwitchOptions(model),
-						_elm_lang$core$List$reverse(
-							A2(
-								_elm_lang$core$List$sortBy,
-								function (_) {
-									return _.id;
-								},
-								A2(
-									_elm_lang$core$List$filter,
-									function (_p27) {
-										return _user$project$Watch$isNothing(
-											function (_) {
-												return _.end;
-											}(_p27));
-									},
-									model.times)))))
-				])),
-			A2(
-			_user$project$Watch$section,
-			'no-pad-top no-pad-bot',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'center',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$NoOp,
-							's12 no-pad',
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A3(
-									_user$project$Watch$button,
-									'btn btn-xlarge white black-text full-width',
-									_elm_lang$core$Native_List.fromArray(
-										[
-											A3(_user$project$Watch$icon, _user$project$Watch$NoOp, 'center', 'clear')
-										]),
-									_user$project$Watch$SwitchSreen(_user$project$Watch$Stopwatch))
-								]))
-						]))
-				]))
-		]);
+					[
+						A3(
+						_user$project$Watch$button,
+						'btn btn-large btn-no-radius white black-text full-width',
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Start')
+							]),
+						_user$project$Watch$Start)
+					])),
+				A3(
+				_user$project$Watch$col,
+				_user$project$Watch$NoOp,
+				's6 no-pad',
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_user$project$Watch$button,
+						'btn btn-large btn-no-radius black white-text full-width',
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Stop')
+							]),
+						_user$project$Watch$Stop)
+					]))
+			]));
 	var times = A2(
 		_elm_lang$core$List$map,
 		_user$project$Watch$displayWatch(model.time),
@@ -9100,131 +9050,289 @@ var _user$project$Watch$view = function (model) {
 				model.times)));
 	var unfinished = A2(
 		_elm_lang$core$List$filter,
-		function (t) {
-			return _user$project$Watch$isNothing(t.end);
+		function (_p32) {
+			return _user$project$Watch$isNothing(
+				function (_) {
+					return _.end;
+				}(_p32));
 		},
 		model.times);
-	var stopwatch = _elm_lang$core$Native_List.fromArray(
+	var info = _elm_lang$core$Native_List.fromArray(
 		[
-			A2(
-			_user$project$Watch$section,
-			'valign-wrapper no-pad-bot',
+			A3(
+			_user$project$Watch$col,
+			_user$project$Watch$SwitchSreen(_user$project$Watch$SettingsScreen),
+			's6',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
-					_user$project$Watch$row,
-					'valign full-width center',
+					_elm_lang$html$Html$p,
 					_elm_lang$core$Native_List.fromArray(
 						[
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$SwitchSreen(_user$project$Watch$Settings),
-							's6',
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(
-									_elm_lang$html$Html$p,
-									_elm_lang$core$Native_List.fromArray(
-										[
-											_elm_lang$html$Html_Attributes$class('flow-text abs-time')
-										]),
-									_elm_lang$core$Native_List.fromArray(
-										[
-											A2(_user$project$Watch$displayAbsoluteTime, model.time, unfinished)
-										]))
-								])),
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$SwitchSreen(_user$project$Watch$OrderSwitch),
-							's6',
-							_elm_lang$core$Native_List.fromArray(
-								[
-									A2(
-									_elm_lang$html$Html$p,
-									_elm_lang$core$Native_List.fromArray(
-										[
-											_elm_lang$html$Html_Attributes$class('flow-text abs-time')
-										]),
-									_elm_lang$core$Native_List.fromArray(
-										[
-											function (_p28) {
-											return _elm_lang$html$Html$text(
-												_elm_lang$core$Basics$toString(_p28));
-										}(model.parallels)
-										]))
-								]))
+							_elm_lang$html$Html_Attributes$class('flow-text large-text')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(_user$project$Watch$displayAbsoluteTime, model.time, unfinished)
 						]))
+				])),
+			A3(
+			_user$project$Watch$col,
+			_user$project$Watch$SwitchSreen(_user$project$Watch$SwitchScreen),
+			's6',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('flow-text large-text')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							function (_p33) {
+							return _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(_p33));
+						}(model.settings.parallels)
+						]))
+				]))
+		]);
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_user$project$Watch$section,
+			'full-width valign-wrapper no-pad-bot flex-start',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(_user$project$Watch$row, 'valign full-width center', info)
 				])),
 			A2(
 			_user$project$Watch$section,
-			'no-pad-bot scroll-wrapper',
+			'scroll-wrapper flex-fill',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(_user$project$Watch$row, 'valign full-width center large-line', times)
 				])),
 			A2(
 			_user$project$Watch$section,
-			'bottom full-width no-pad-bot',
+			'full-width no-pad-bot flex-end',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(_user$project$Watch$row, '', navButtons)
+				]))
+		]);
+};
+var _user$project$Watch$switch = function (model) {
+	var times = _elm_lang$core$List$reverse(
+		A2(
+			_elm_lang$core$List$sortBy,
+			function (_) {
+				return _.id;
+			},
+			A2(
+				_elm_lang$core$List$filter,
+				function (_p34) {
+					return _user$project$Watch$isNothing(
+						function (_) {
+							return _.end;
+						}(_p34));
+				},
+				model.times)));
+	var instructionText = function () {
+		var _p35 = model.$switch;
+		if (_p35.ctor === 'Just') {
+			return A2(
+				_elm_lang$core$String$join,
+				' ',
+				_elm_lang$core$Native_List.fromArray(
+					[
+						'Select the change for',
+						_elm_lang$core$Basics$toString(_p35._0 + 1),
+						'!'
+					]));
+		} else {
+			return 'Chose which time would you like to switch!';
+		}
+	}();
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_user$project$Watch$section,
+			'full-width white black-text container flex-start',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
 					_user$project$Watch$row,
-					'no-margin-bot',
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(instructionText)
+								]))
+						])),
+					_user$project$Watch$divider('container')
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width no-pad-top no-pad-bot flex-fill scroll-wrapper container',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'center large-line',
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Watch$displaySwitchOptions(model),
+						times))
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width center flex-end',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A3(
+					_user$project$Watch$button,
+					'btn btn-floating black white-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
+						]),
+					_user$project$Watch$SwitchSreen(_user$project$Watch$StopwatchScreen))
+				]))
+		]);
+};
+var _user$project$Watch$settings = function (model) {
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_user$project$Watch$section,
+			'no-pad-bot white black-text container flex-start',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text large-text center')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Settings')
+								]))
+						])),
+					_user$project$Watch$divider('container')
+				])),
+			A2(
+			_user$project$Watch$section,
+			'no-pad-bot white black-text container scroll-wrapper flex-fill',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Clear all the current times!')
+								]))
+						])),
+					A2(
+					_user$project$Watch$row,
+					'center',
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$NoOp,
-							's6 no-pad',
+							_user$project$Watch$button,
+							'btn black white-text',
 							_elm_lang$core$Native_List.fromArray(
 								[
-									A3(
-									_user$project$Watch$button,
-									'btn-large white black-text full-width',
-									_elm_lang$core$Native_List.fromArray(
-										[
-											_elm_lang$html$Html$text('Start')
-										]),
-									_user$project$Watch$Start)
-								])),
-							A3(
-							_user$project$Watch$col,
-							_user$project$Watch$NoOp,
-							's6 no-pad',
+									_elm_lang$html$Html$text('Clear')
+								]),
+							_user$project$Watch$Clear)
+						])),
+					_user$project$Watch$divider('container'),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
 							_elm_lang$core$Native_List.fromArray(
 								[
-									A3(
-									_user$project$Watch$button,
-									'btn-large black white-text full-width',
-									_elm_lang$core$Native_List.fromArray(
-										[
-											_elm_lang$html$Html$text('Stop')
-										]),
-									_user$project$Watch$Stop)
+									_elm_lang$html$Html_Attributes$class('flow-text')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('How many people start at the same time?')
 								]))
-						]))
+						])),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					A2(
+						_elm_lang$core$List$map,
+						_user$project$Watch$displayParallelsOption(model),
+						_elm_lang$core$Native_List.fromArray(
+							[1, 2, 3, 4, 6, 12]))),
+					_user$project$Watch$divider('container')
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width center flex-end',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A3(
+					_user$project$Watch$button,
+					'btn btn-floating black white-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
+						]),
+					_user$project$Watch$SwitchSreen(_user$project$Watch$StopwatchScreen))
 				]))
 		]);
+};
+var _user$project$Watch$view = function (model) {
 	var content = function () {
-		var _p29 = model.screen;
-		switch (_p29.ctor) {
-			case 'Stopwatch':
-				return stopwatch;
-			case 'OrderSwitch':
-				return $switch;
-			case 'Settings':
-				return settings;
+		var _p36 = model.screen;
+		switch (_p36.ctor) {
+			case 'StopwatchScreen':
+				return _user$project$Watch$stopwatch;
+			case 'SwitchScreen':
+				return _user$project$Watch$switch;
+			case 'SettingsScreen':
+				return _user$project$Watch$settings;
 			default:
-				return about;
+				return _user$project$Watch$about;
 		}
 	}();
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Attributes$class('full-width full-height white black-text no-pad-bot')
+				_elm_lang$html$Html_Attributes$class('flex-container white black-text')
 			]),
-		content);
+		content(model));
 };
 var _user$project$Watch$main = {
 	main: _elm_lang$html$Html_App$program(

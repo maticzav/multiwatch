@@ -23,10 +23,10 @@ type alias ID =
 
 
 type Screen
-    = Stopwatch
-    | OrderSwitch
-    | Settings
-    | About
+    = StopwatchScreen
+    | SwitchScreen
+    | SettingsScreen
+    | AboutScreen
 
 
 type alias Watch =
@@ -38,13 +38,19 @@ type alias Watch =
     }
 
 
+type alias Settings =
+    { startLstopR : Bool
+    , parallels : Int
+    }
+
+
 type alias Model =
     { screen : Screen
     , current_id : ID
     , time : Time
     , times : List Watch
-    , parallels : Int
     , switch : Maybe Int
+    , settings : Settings
     }
 
 
@@ -65,12 +71,12 @@ newWatch id time =
 defaultModel : Model
 defaultModel =
     Model
-        Stopwatch
+        StopwatchScreen
         0
         0
         []
-        3
         Nothing
+        (Settings False 3)
 
 
 init : ( Model, Cmd Msg )
@@ -88,6 +94,7 @@ type Msg
     | Parallels Int
     | Start
     | Stop
+    | Clear
     | Lap ID
     | Display ID
     | Switch (Maybe ID) ID
@@ -150,7 +157,7 @@ subscriptions model =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ({ settings } as model) =
     case msg of
         NoOp ->
             model ! []
@@ -160,10 +167,16 @@ update msg model =
 
         Parallels i ->
             let
+                newSettings : Settings
+                newSettings =
+                    { settings
+                        | parallels = i
+                    }
+
                 newModel : Model
                 newModel =
                     { model
-                        | parallels = i
+                        | settings = newSettings
                         , current_id = 0
                         , times = []
                     }
@@ -178,7 +191,7 @@ update msg model =
 
                 newTimes : List Watch
                 newTimes =
-                    List.map (flip newWatch model.time) [model.current_id..(model.current_id + model.parallels - 1)] ++ model.times
+                    List.map (flip newWatch model.time) [model.current_id..(model.current_id + settings.parallels - 1)] ++ model.times
 
                 max_id : Int
                 max_id =
@@ -224,6 +237,19 @@ update msg model =
                 newModel =
                     { model
                         | times = newTimes
+                    }
+            in
+                newModel ! []
+
+        Clear ->
+            let
+                newModel : Model
+                newModel =
+                    { model
+                        | times = []
+                        , current_id = 0
+                        , switch = Nothing
+                        , screen = StopwatchScreen
                     }
             in
                 newModel ! []
@@ -326,7 +352,7 @@ update msg model =
                 newScreen =
                     case model.switch of
                         Just fs ->
-                            Stopwatch
+                            StopwatchScreen
 
                         Nothing ->
                             model.screen
@@ -381,9 +407,7 @@ button color content msg =
         [ href "#!"
         , onClick msg
         , classList
-            [ color => True
-            , "btn" => True
-            ]
+            [ color => True ]
         ]
         content
 
@@ -391,6 +415,11 @@ button color content msg =
 icon : Msg -> String -> String -> Html Msg
 icon onclick styl icon =
     i [ onClick onclick, class ("material-icons " ++ styl) ] [ text icon ]
+
+
+divider : String -> Html Msg
+divider styl =
+    div [ classList [ "divider" => True, styl => True ] ] []
 
 
 
@@ -490,14 +519,12 @@ displayParallelsOption model i =
     let
         color : String
         color =
-            if i == model.parallels then
+            if i == model.settings.parallels then
                 "red white-text"
-            else if isOdd i then
-                "black white-text"
             else
                 "white black-text"
     in
-        col NoOp "s12" [ button (String.join " " [ "full-width", "btn-xlarge", color ]) [ (text << toString) i ] (Parallels i) ]
+        col NoOp "s2" [ button (String.join " " [ "center", "btn-floating", color ]) [ (text << toString) i ] (Parallels i) ]
 
 
 displaySwitchText : Model -> Html Msg
@@ -515,12 +542,120 @@ displaySwitchOptions model w =
     let
         color : String
         color =
-            if isOdd w.id then
-                "black white-text"
-            else
-                "white black-text"
+            case model.switch of
+                Just id ->
+                    if id == w.id then
+                        "blue white-text"
+                    else
+                        "white black-text"
+
+                Nothing ->
+                    "white black-text"
+
+        colSize : String
+        colSize =
+            String.join "" [ "s", toString <| 12 // model.settings.parallels ]
+
+        btnStyle : String
+        btnStyle =
+            String.join " " [ "btn-floating", color ]
     in
-        col NoOp ("s" ++ (toString <| 12 // model.parallels)) [ button (String.join " " [ "full-width", "btn-xlarge", color ]) [ (text << toString) (w.id + 1) ] (Switch model.switch w.id) ]
+        col NoOp colSize [ button btnStyle [ (text << toString) (w.id + 1) ] (Switch model.switch w.id) ]
+
+
+
+-- Screens -------------------------------------------------------------------
+
+
+stopwatch : Model -> List (Html Msg)
+stopwatch model =
+    let
+        unfinished : List Watch
+        unfinished =
+            List.filter (isNothing << .end) model.times
+
+        times : List (Html Msg)
+        times =
+            List.sortBy .id model.times
+                |> List.reverse
+                |> List.map (displayWatch model.time)
+
+        info : List (Html Msg)
+        info =
+            [ col (SwitchSreen SettingsScreen) "s6" [ p [ class "flow-text large-text" ] [ displayAbsoluteTime model.time unfinished ] ]
+            , col (SwitchSreen SwitchScreen) "s6" [ p [ class "flow-text large-text" ] [ (text << toString) model.settings.parallels ] ]
+            ]
+
+        navButtons : List (Html Msg)
+        navButtons =
+            [ col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius white black-text full-width" [ text "Start" ] Start ]
+            , col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius black white-text full-width" [ text "Stop" ] Stop ]
+            ]
+                |> (if model.settings.startLstopR then
+                        identity
+                    else
+                        List.reverse
+                   )
+    in
+        [ section "full-width valign-wrapper no-pad-bot flex-start"
+            [ row "valign full-width center" (info) ]
+        , section "scroll-wrapper flex-fill" [ row "valign full-width center large-line" times ]
+        , section "full-width no-pad-bot flex-end"
+            [ row "" (navButtons) ]
+        ]
+
+
+switch : Model -> List (Html Msg)
+switch model =
+    let
+        instructionText : String
+        instructionText =
+            case model.switch of
+                Just fs ->
+                    String.join " " [ "Select the change for", toString (fs + 1), "!" ]
+
+                Nothing ->
+                    "Chose which time would you like to switch!"
+
+        times : List Watch
+        times =
+            List.filter (isNothing << .end) model.times
+                |> List.sortBy .id
+                |> List.reverse
+    in
+        [ section "full-width white black-text container flex-start"
+            [ row "center" [ p [ class "flow-text" ] [ text instructionText ] ]
+            , divider "container"
+            ]
+        , section "full-width no-pad-top no-pad-bot flex-fill scroll-wrapper container"
+            [ row "center large-line" (List.map (displaySwitchOptions model) times) ]
+        , section "full-width center flex-end"
+            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchSreen StopwatchScreen) ]
+        ]
+
+
+settings : Model -> List (Html Msg)
+settings model =
+    [ section "no-pad-bot white black-text container flex-start"
+        [ row "center" [ p [ class "flow-text large-text center" ] [ text "Settings" ] ]
+        , divider "container"
+        ]
+    , section "no-pad-bot white black-text container scroll-wrapper flex-fill"
+        [ row "center" [ p [ class "flow-text" ] [ text "Clear all the current times!" ] ]
+        , row "center" [ button "btn black white-text" [ text "Clear" ] Clear ]
+        , divider "container"
+        , row "center" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
+        , row "center" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 6, 12 ])
+        , divider "container"
+        ]
+    , section "full-width center flex-end"
+        [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchSreen StopwatchScreen) ]
+    ]
+
+
+about : Model -> List (Html Msg)
+about model =
+    []
 
 
 
@@ -530,76 +665,22 @@ displaySwitchOptions model w =
 view : Model -> Html Msg
 view model =
     let
-        unfinished : List Watch
-        unfinished =
-            List.filter (\t -> isNothing t.end) model.times
-
-        times : List (Html Msg)
-        times =
-            List.sortBy .id model.times
-                |> List.reverse
-                |> List.map (displayWatch model.time)
-
-        stopwatch : List (Html Msg)
-        stopwatch =
-            [ section "valign-wrapper no-pad-bot"
-                [ row "valign full-width center"
-                    [ col (SwitchSreen Settings) "s6" [ p [ class "flow-text abs-time" ] [ displayAbsoluteTime model.time unfinished ] ]
-                    , col (SwitchSreen OrderSwitch) "s6" [ p [ class "flow-text abs-time" ] [ (text << toString) model.parallels ] ]
-                    ]
-                ]
-            , section "no-pad-bot scroll-wrapper" [ row "valign full-width center large-line" times ]
-            , section "bottom full-width no-pad-bot"
-                [ row "no-margin-bot"
-                    [ col NoOp "s6 no-pad" [ button "btn-large white black-text full-width" [ text "Start" ] Start ]
-                    , col NoOp "s6 no-pad" [ button "btn-large black white-text full-width" [ text "Stop" ] Stop ]
-                    ]
-                ]
-            ]
-
-        switch : List (Html Msg)
-        switch =
-            [ section "valign-wrapper no-pad-bot white black-text"
-                [ row "valign center container" [ p [ class "flow-text" ] [ displaySwitchText model ] ]
-                ]
-            , section "no-pad-top no-pad-bot"
-                [ row "" (List.map (displaySwitchOptions model) (List.reverse <| List.sortBy .id <| List.filter (isNothing << .end) model.times))
-                ]
-            , section "no-pad-top no-pad-bot"
-                [ row "center" [ col NoOp "s12 no-pad" [ button "btn btn-xlarge white black-text full-width" [ icon (NoOp) "center" "clear" ] (SwitchSreen Stopwatch) ] ] ]
-            ]
-
-        settings : List (Html Msg)
-        settings =
-            [ section "valign-wrapper no-pad-bot white black-text"
-                [ row "valign center container" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
-                ]
-            , section "no-pad-top no-pad-bot" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 6 ])
-            , section "no-pad-top no-pad-bot"
-                [ row "center" [ col NoOp "s12 no-pad" [ button "btn btn-xlarge white black-text full-width" [ icon (NoOp) "center" "clear" ] (SwitchSreen Stopwatch) ] ] ]
-            ]
-
-        about : List (Html Msg)
-        about =
-            []
-
-        content : List (Html Msg)
+        content : Model -> List (Html Msg)
         content =
             case model.screen of
-                Stopwatch ->
+                StopwatchScreen ->
                     stopwatch
 
-                OrderSwitch ->
+                SwitchScreen ->
                     switch
 
-                Settings ->
+                SettingsScreen ->
                     settings
 
-                About ->
+                AboutScreen ->
                     about
     in
-        content
-            |> div [ class "full-width full-height white black-text no-pad-bot" ]
+        div [ class "flex-container white black-text" ] (content model)
 
 
 
