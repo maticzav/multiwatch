@@ -444,6 +444,11 @@ displayTime time =
     in
         List.map toString [ minutes, seconds, miliseconds ]
             |> String.join " : "
+            |> (if miliseconds < 10 then
+                    flip (++) "0"
+                else
+                    identity
+               )
 
 
 

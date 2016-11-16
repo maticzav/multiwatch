@@ -8385,14 +8385,21 @@ var _user$project$Watch$displayTime = function (time) {
 	}(
 		_elm_lang$core$Time$inMilliseconds(
 			(time - (_elm_lang$core$Basics$toFloat(seconds) * _elm_lang$core$Time$second)) - (_elm_lang$core$Basics$toFloat(minutes) * _elm_lang$core$Time$minute)));
-	return A2(
-		_elm_lang$core$String$join,
-		' : ',
+	return ((_elm_lang$core$Native_Utils.cmp(miliseconds, 10) < 0) ? A2(
+		_elm_lang$core$Basics$flip,
+		F2(
+			function (x, y) {
+				return A2(_elm_lang$core$Basics_ops['++'], x, y);
+			}),
+		'0') : _elm_lang$core$Basics$identity)(
 		A2(
-			_elm_lang$core$List$map,
-			_elm_lang$core$Basics$toString,
-			_elm_lang$core$Native_List.fromArray(
-				[minutes, seconds, miliseconds])));
+			_elm_lang$core$String$join,
+			' : ',
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$core$Basics$toString,
+				_elm_lang$core$Native_List.fromArray(
+					[minutes, seconds, miliseconds]))));
 };
 var _user$project$Watch$displayAbsoluteTime = F2(
 	function (time, times) {
