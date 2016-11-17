@@ -31,6 +31,7 @@ type Screen
 
 type alias Watch =
     { id : ID
+    , order : Int
     , start : Time
     , laps : List Time
     , end : Maybe Time
@@ -46,7 +47,6 @@ type alias Settings =
 
 type alias Model =
     { screen : Screen
-    , current_id : ID
     , time : Time
     , times : List Watch
     , switch : Maybe Int
@@ -58,10 +58,11 @@ type alias Model =
 -- Init ----------------------------------------------------------------------
 
 
-newWatch : ID -> Time -> Watch
-newWatch id time =
+newWatch : Time -> ID -> Int -> Watch
+newWatch time id ord =
     Watch
         id
+        ord
         time
         []
         Nothing
@@ -72,7 +73,6 @@ defaultModel : Model
 defaultModel =
     Model
         StopwatchScreen
-        0
         0
         []
         Nothing
@@ -143,13 +143,19 @@ take2 list =
             Just ( x, xs )
 
 
-
--- [1,2] -> 3 -> [1,3,2]
-
-
 addBeforeLast : List a -> a -> List a
 addBeforeLast l el =
     List.concat [ List.take (List.length l - 1) l, [ el ], List.drop (List.length l - 1) l ]
+
+
+zip : List a -> List b -> List ( a, b )
+zip xs ys =
+    case ( xs, ys ) of
+        ( x :: xBack, y :: yBack ) ->
+            ( x, y ) :: zip xBack yBack
+
+        ( _, _ ) ->
+            []
 
 
 
@@ -186,7 +192,6 @@ update msg ({ settings } as model) =
                 newModel =
                     { model
                         | settings = newSettings
-                        , current_id = 0
                         , times = []
                     }
             in
@@ -198,9 +203,35 @@ update msg ({ settings } as model) =
                 unfinished =
                     List.filter (\t -> isNothing t.end) model.times
 
+                next_id : ID
+                next_id =
+                    case List.maximum (List.map .id model.times) of
+                        Just max ->
+                            max + 1
+
+                        Nothing ->
+                            0
+
+                next_order : ID
+                next_order =
+                    case List.maximum (List.map .order model.times) of
+                        Just max ->
+                            max + 1
+
+                        Nothing ->
+                            0
+
+                newTimesIDRange : List Int
+                newTimesIDRange =
+                    [next_id..(next_id + settings.parallels - 1)]
+
+                newTimesOrderRange : List Int
+                newTimesOrderRange =
+                    [next_order..(next_order + settings.parallels - 1)]
+
                 newTimes : List Watch
                 newTimes =
-                    List.map (flip newWatch model.time) [model.current_id..(model.current_id + settings.parallels - 1)] ++ model.times
+                    (List.map (uncurry (newWatch model.time)) (zip newTimesIDRange newTimesOrderRange)) ++ model.times
 
                 max_id : Int
                 max_id =
@@ -209,13 +240,12 @@ update msg ({ settings } as model) =
                             max
 
                         Nothing ->
-                            model.current_id
+                            next_id
 
                 newModel : Model
                 newModel =
                     { model
-                        | current_id = 1 + max_id
-                        , times = newTimes
+                        | times = newTimes
                     }
             in
                 newModel ! []
@@ -224,20 +254,20 @@ update msg ({ settings } as model) =
             let
                 unfinished : List Watch
                 unfinished =
-                    List.filter (\t -> isNothing t.end) model.times
+                    List.filter (isNothing << .end) model.times
 
-                end : ID -> Watch -> Watch
-                end id watch =
-                    if watch.id == id then
+                end : Int -> Watch -> Watch
+                end order watch =
+                    if watch.order == order then
                         { watch | end = Just model.time }
                     else
                         watch
 
                 newTimes : List Watch
                 newTimes =
-                    case List.head (List.sortBy .id unfinished) of
+                    case List.head (List.sortBy .order unfinished) of
                         Just watch ->
-                            List.map (end watch.id) model.times
+                            List.map (end watch.order) model.times
 
                         Nothing ->
                             model.times
@@ -256,7 +286,6 @@ update msg ({ settings } as model) =
                 newModel =
                     { model
                         | times = []
-                        , current_id = 0
                         , switch = Nothing
                         , screen = StopwatchScreen
                     }
@@ -329,13 +358,13 @@ update msg ({ settings } as model) =
 
         Switch fs sn ->
             let
-                switch : ID -> ID -> Watch -> Watch
+                switch : Int -> Int -> Watch -> Watch
                 switch fs sn w =
-                    if w.id == fs || w.id == sn then
-                        if w.id == fs then
-                            { w | id = sn }
+                    if w.order == fs || w.order == sn then
+                        if w.order == fs then
+                            { w | order = sn }
                         else
-                            { w | id = fs }
+                            { w | order = fs }
                     else
                         w
 
@@ -590,7 +619,7 @@ stopwatch model =
 
         times : List (Html Msg)
         times =
-            List.sortBy .id model.times
+            List.sortBy .order model.times
                 |> List.reverse
                 |> List.map (displayWatch model.time)
 
