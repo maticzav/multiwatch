@@ -144,6 +144,15 @@ take2 list =
 
 
 
+-- [1,2] -> 3 -> [1,3,2]
+
+
+addBeforeLast : List a -> a -> List a
+addBeforeLast l el =
+    List.concat [ List.take (List.length l - 1) l, [ el ], List.drop (List.length l - 1) l ]
+
+
+
 -- Subscriptions -------------------------------------------------------------
 
 
@@ -445,7 +454,7 @@ displayTime time =
         List.map toString [ minutes, seconds, miliseconds ]
             |> String.join " : "
             |> (if miliseconds < 10 then
-                    flip (++) "0"
+                    String.toList >> flip addBeforeLast '0' >> String.fromList
                 else
                     identity
                )
