@@ -23,10 +23,11 @@ type alias ID =
 
 
 type Screen
-    = StopwatchScreen
-    | SwitchScreen
-    | SettingsScreen
-    | AboutScreen
+    = ScreenStopwatch
+    | ScreenSwitch
+    | ScreenSettings
+    | ScreenIntro
+    | ScreenAbout
 
 
 type alias Watch =
@@ -72,7 +73,7 @@ newWatch time id ord =
 defaultModel : Model
 defaultModel =
     Model
-        StopwatchScreen
+        ScreenIntro
         0
         []
         Nothing
@@ -98,7 +99,7 @@ type Msg
     | Lap ID
     | Display ID
     | Switch (Maybe ID) ID
-    | SwitchSreen Screen
+    | SwitchScreen Screen
 
 
 
@@ -287,7 +288,7 @@ update msg ({ settings } as model) =
                     { model
                         | times = []
                         , switch = Nothing
-                        , screen = StopwatchScreen
+                        , screen = ScreenStopwatch
                     }
             in
                 newModel ! []
@@ -390,7 +391,7 @@ update msg ({ settings } as model) =
                 newScreen =
                     case model.switch of
                         Just fs ->
-                            StopwatchScreen
+                            ScreenStopwatch
 
                         Nothing ->
                             model.screen
@@ -405,7 +406,7 @@ update msg ({ settings } as model) =
             in
                 newModel ! []
 
-        SwitchSreen screen ->
+        SwitchScreen screen ->
             let
                 newModel : Model
                 newModel =
@@ -625,8 +626,8 @@ stopwatch model =
 
         info : List (Html Msg)
         info =
-            [ col (SwitchSreen SettingsScreen) "s6" [ p [ class "flow-text large-text" ] [ displayAbsoluteTime model.time unfinished ] ]
-            , col (SwitchSreen SwitchScreen) "s6" [ p [ class "flow-text large-text" ] [ (text << toString) model.settings.parallels ] ]
+            [ col (SwitchScreen ScreenSettings) "s6" [ p [ class "flow-text large-text" ] [ displayAbsoluteTime model.time unfinished ] ]
+            , col (SwitchScreen ScreenSwitch) "s6" [ p [ class "flow-text large-text" ] [ (text << toString) model.settings.parallels ] ]
             ]
 
         navButtons : List (Html Msg)
@@ -673,7 +674,7 @@ switch model =
         , section "full-width no-pad-top no-pad-bot flex-fill scroll-wrapper container"
             [ row "center large-line" (List.map (displaySwitchOptions model) times) ]
         , section "full-width center flex-end"
-            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchSreen StopwatchScreen) ]
+            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchScreen ScreenStopwatch) ]
         ]
 
 
@@ -690,15 +691,82 @@ settings model =
         , row "center" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
         , row "center" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 6, 12 ])
         , divider "container"
+        , row "center" [ p [ class "flow-text" ] [ text "Replay intro." ] ]
+        , row "center" [ button "btn black white-text" [ text "Intro" ] (SwitchScreen ScreenIntro) ]
+        , divider "container"
+        , row "center" [ p [ class "flow-text" ] [ text "About Me." ] ]
+        , row "center" [ button "btn black white-text" [ text "About Me" ] (SwitchScreen ScreenAbout) ]
+        , divider "container"
         ]
     , section "full-width center flex-end"
-        [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchSreen StopwatchScreen) ]
+        [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchScreen ScreenStopwatch) ]
     ]
+
+
+intro : Model -> List (Html Msg)
+intro model =
+    let
+        infoText : String
+        infoText =
+            """
+                Press on the Start/Current Time text to enter Settings and
+                3/Paralells counter text to enter Switch screen.
+            """
+
+        info : List (Html Msg)
+        info =
+            [ col (NoOp) "s6" [ p [ class "flow-text large-text" ] [ text "Start" ] ]
+            , col (NoOp) "s6" [ p [ class "flow-text large-text" ] [ text "3" ] ]
+            ]
+
+        navButtonsText : String
+        navButtonsText =
+            """
+                Use Start to start the new round of parallel times and Stop
+                to stop each time separately.
+            """
+
+        navButtons : List (Html Msg)
+        navButtons =
+            [ col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius white black-text full-width" [ text "Start" ] NoOp ]
+            , col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius black white-text full-width" [ text "Stop" ] NoOp ]
+            ]
+                |> (if model.settings.startLstopR then
+                        identity
+                    else
+                        List.reverse
+                   )
+    in
+        [ section "full-width valign-wrapper center flex-fill black white-text"
+            [ row "valign container center flow-text" [ text infoText ] ]
+        , section "full-width valign-wrapper no-pad-bot flex-fill"
+            [ row "valign full-width center" (info) ]
+        , section "full-width valign-wrapper center flex-fill black white-text"
+            [ row "valign container center flow-text" [ text navButtonsText ] ]
+        , section "full-width no-pad-bot flex-fill"
+            [ row "" (navButtons) ]
+        , section "full-width no-pad-top center flex-fill white"
+            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchScreen ScreenStopwatch) ]
+        ]
 
 
 about : Model -> List (Html Msg)
 about model =
-    []
+    let
+        aboutText : String
+        aboutText =
+            """
+                About Me!
+            """
+    in
+        [ section "no-pad-bot white black-text container flex-start"
+            [ row "center" [ p [ class "flow-text large-text center" ] [ text "About" ] ]
+            , divider "container"
+            ]
+        , section "scroll-wrapper flex-fill" [ row "valign container center large-line flow-text" [ text aboutText ] ]
+        , section "full-width center flex-end"
+            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchScreen ScreenStopwatch) ]
+        ]
 
 
 
@@ -711,16 +779,19 @@ view model =
         content : Model -> List (Html Msg)
         content =
             case model.screen of
-                StopwatchScreen ->
+                ScreenStopwatch ->
                     stopwatch
 
-                SwitchScreen ->
+                ScreenSwitch ->
                     switch
 
-                SettingsScreen ->
+                ScreenSettings ->
                     settings
 
-                AboutScreen ->
+                ScreenIntro ->
+                    intro
+
+                ScreenAbout ->
                     about
     in
         div [ class "flex-container white black-text" ] (content model)

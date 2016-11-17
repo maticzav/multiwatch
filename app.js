@@ -8346,10 +8346,6 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
-var _user$project$Watch$about = function (model) {
-	return _elm_lang$core$Native_List.fromArray(
-		[]);
-};
 var _user$project$Watch$displaySwitchText = function (model) {
 	var _p0 = model.$switch;
 	if (_p0.ctor === 'Just') {
@@ -8603,13 +8599,11 @@ var _user$project$Watch$Model = F5(
 	function (a, b, c, d, e) {
 		return {screen: a, time: b, times: c, $switch: d, settings: e};
 	});
-var _user$project$Watch$AboutScreen = {ctor: 'AboutScreen'};
-var _user$project$Watch$SettingsScreen = {ctor: 'SettingsScreen'};
-var _user$project$Watch$SwitchScreen = {ctor: 'SwitchScreen'};
-var _user$project$Watch$StopwatchScreen = {ctor: 'StopwatchScreen'};
+var _user$project$Watch$ScreenAbout = {ctor: 'ScreenAbout'};
+var _user$project$Watch$ScreenIntro = {ctor: 'ScreenIntro'};
 var _user$project$Watch$defaultModel = A5(
 	_user$project$Watch$Model,
-	_user$project$Watch$StopwatchScreen,
+	_user$project$Watch$ScreenIntro,
 	0,
 	_elm_lang$core$Native_List.fromArray(
 		[]),
@@ -8620,6 +8614,9 @@ var _user$project$Watch$init = A2(
 	_user$project$Watch$defaultModel,
 	_elm_lang$core$Native_List.fromArray(
 		[]));
+var _user$project$Watch$ScreenSettings = {ctor: 'ScreenSettings'};
+var _user$project$Watch$ScreenSwitch = {ctor: 'ScreenSwitch'};
+var _user$project$Watch$ScreenStopwatch = {ctor: 'ScreenStopwatch'};
 var _user$project$Watch$update = F2(
 	function (msg, _p9) {
 		var _p10 = _p9;
@@ -8774,7 +8771,7 @@ var _user$project$Watch$update = F2(
 						times: _elm_lang$core$Native_List.fromArray(
 							[]),
 						$switch: _elm_lang$core$Maybe$Nothing,
-						screen: _user$project$Watch$StopwatchScreen
+						screen: _user$project$Watch$ScreenStopwatch
 					});
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
@@ -8857,7 +8854,7 @@ var _user$project$Watch$update = F2(
 				var newScreen = function () {
 					var _p21 = _p25.$switch;
 					if (_p21.ctor === 'Just') {
-						return _user$project$Watch$StopwatchScreen;
+						return _user$project$Watch$ScreenStopwatch;
 					} else {
 						return _p25.screen;
 					}
@@ -8908,8 +8905,8 @@ var _user$project$Watch$update = F2(
 						[]));
 		}
 	});
-var _user$project$Watch$SwitchSreen = function (a) {
-	return {ctor: 'SwitchSreen', _0: a};
+var _user$project$Watch$SwitchScreen = function (a) {
+	return {ctor: 'SwitchScreen', _0: a};
 };
 var _user$project$Watch$Switch = F2(
 	function (a, b) {
@@ -9131,7 +9128,7 @@ var _user$project$Watch$stopwatch = function (model) {
 		[
 			A3(
 			_user$project$Watch$col,
-			_user$project$Watch$SwitchSreen(_user$project$Watch$SettingsScreen),
+			_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenSettings),
 			's6',
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9148,7 +9145,7 @@ var _user$project$Watch$stopwatch = function (model) {
 				])),
 			A3(
 			_user$project$Watch$col,
-			_user$project$Watch$SwitchSreen(_user$project$Watch$SwitchScreen),
+			_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenSwitch),
 			's6',
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9274,7 +9271,7 @@ var _user$project$Watch$switch = function (model) {
 						[
 							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
 						]),
-					_user$project$Watch$SwitchSreen(_user$project$Watch$StopwatchScreen))
+					_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenStopwatch))
 				]))
 		]);
 };
@@ -9364,6 +9361,68 @@ var _user$project$Watch$settings = function (model) {
 						_user$project$Watch$displayParallelsOption(model),
 						_elm_lang$core$Native_List.fromArray(
 							[1, 2, 3, 4, 6, 12]))),
+					_user$project$Watch$divider('container'),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Replay intro.')
+								]))
+						])),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(
+							_user$project$Watch$button,
+							'btn black white-text',
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('Intro')
+								]),
+							_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenIntro))
+						])),
+					_user$project$Watch$divider('container'),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('About Me.')
+								]))
+						])),
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(
+							_user$project$Watch$button,
+							'btn black white-text',
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('About Me')
+								]),
+							_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenAbout))
+						])),
 					_user$project$Watch$divider('container')
 				])),
 			A2(
@@ -9378,7 +9437,195 @@ var _user$project$Watch$settings = function (model) {
 						[
 							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
 						]),
-					_user$project$Watch$SwitchSreen(_user$project$Watch$StopwatchScreen))
+					_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenStopwatch))
+				]))
+		]);
+};
+var _user$project$Watch$intro = function (model) {
+	var navButtons = (model.settings.startLstopR ? _elm_lang$core$Basics$identity : _elm_lang$core$List$reverse)(
+		_elm_lang$core$Native_List.fromArray(
+			[
+				A3(
+				_user$project$Watch$col,
+				_user$project$Watch$NoOp,
+				's6 no-pad',
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_user$project$Watch$button,
+						'btn btn-large btn-no-radius white black-text full-width',
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Start')
+							]),
+						_user$project$Watch$NoOp)
+					])),
+				A3(
+				_user$project$Watch$col,
+				_user$project$Watch$NoOp,
+				's6 no-pad',
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A3(
+						_user$project$Watch$button,
+						'btn btn-large btn-no-radius black white-text full-width',
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Stop')
+							]),
+						_user$project$Watch$NoOp)
+					]))
+			]));
+	var navButtonsText = '\n                Use Start to start the new round of parallel times and Stop\n                to stop each time separately.\n            ';
+	var info = _elm_lang$core$Native_List.fromArray(
+		[
+			A3(
+			_user$project$Watch$col,
+			_user$project$Watch$NoOp,
+			's6',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('flow-text large-text')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('Start')
+						]))
+				])),
+			A3(
+			_user$project$Watch$col,
+			_user$project$Watch$NoOp,
+			's6',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$p,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$class('flow-text large-text')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('3')
+						]))
+				]))
+		]);
+	var infoText = '\n                Press on the Start/Current Time text to enter Settings and\n                3/Paralells counter text to enter Switch screen.\n            ';
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_user$project$Watch$section,
+			'full-width valign-wrapper center flex-fill black white-text',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'valign container center flow-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(infoText)
+						]))
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width valign-wrapper no-pad-bot flex-fill',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(_user$project$Watch$row, 'valign full-width center', info)
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width valign-wrapper center flex-fill black white-text',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'valign container center flow-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(navButtonsText)
+						]))
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width no-pad-bot flex-fill',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(_user$project$Watch$row, '', navButtons)
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width no-pad-top center flex-fill white',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A3(
+					_user$project$Watch$button,
+					'btn btn-floating black white-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
+						]),
+					_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenStopwatch))
+				]))
+		]);
+};
+var _user$project$Watch$about = function (model) {
+	var aboutText = '\n                About Me!\n            ';
+	return _elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_user$project$Watch$section,
+			'no-pad-bot white black-text container flex-start',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'center',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text large-text center')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text('About')
+								]))
+						])),
+					_user$project$Watch$divider('container')
+				])),
+			A2(
+			_user$project$Watch$section,
+			'scroll-wrapper flex-fill',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_user$project$Watch$row,
+					'valign container center large-line flow-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(aboutText)
+						]))
+				])),
+			A2(
+			_user$project$Watch$section,
+			'full-width center flex-end',
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A3(
+					_user$project$Watch$button,
+					'btn btn-floating black white-text',
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
+						]),
+					_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenStopwatch))
 				]))
 		]);
 };
@@ -9386,12 +9633,14 @@ var _user$project$Watch$view = function (model) {
 	var content = function () {
 		var _p41 = model.screen;
 		switch (_p41.ctor) {
-			case 'StopwatchScreen':
+			case 'ScreenStopwatch':
 				return _user$project$Watch$stopwatch;
-			case 'SwitchScreen':
+			case 'ScreenSwitch':
 				return _user$project$Watch$switch;
-			case 'SettingsScreen':
+			case 'ScreenSettings':
 				return _user$project$Watch$settings;
+			case 'ScreenIntro':
+				return _user$project$Watch$intro;
 			default:
 				return _user$project$Watch$about;
 		}
