@@ -9491,12 +9491,12 @@ var _user$project$Watch$intro = function (model) {
 				])),
 			A2(
 			_user$project$Watch$section,
-			'no-pad-bot white black-text container flex-start',
+			'no-pad-bot white black-text flex-start',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
 					_user$project$Watch$row,
-					'center',
+					'center container',
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A2(

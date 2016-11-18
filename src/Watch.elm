@@ -721,8 +721,8 @@ intro model =
     in
         [ section "full-width valign-wrapper black white-text no-pad-bot flex-start"
             [ row "valign full-width center" (info) ]
-        , section "no-pad-bot white black-text container flex-start"
-            [ row "center" [ p [ class "flow-text large-text center" ] [ text infoText ] ]
+        , section "no-pad-bot white black-text flex-start"
+            [ row "center container" [ p [ class "flow-text large-text center" ] [ text infoText ] ]
             ]
         , section "full-width center flex-bot white"
             [ button "btn btn-floating black" [ icon (NoOp) "white-text" "clear" ] (SwitchScreen ScreenStopwatch) ]
