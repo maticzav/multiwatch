@@ -9168,7 +9168,7 @@ var _user$project$Watch$stopwatch = function (model) {
 		[
 			A2(
 			_user$project$Watch$section,
-			'full-width valign-wrapper no-pad-bot flex-start',
+			'full-width valign-wrapper black white-text no-pad-bot flex-start',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(_user$project$Watch$row, 'valign full-width center', info)
@@ -9442,46 +9442,11 @@ var _user$project$Watch$settings = function (model) {
 		]);
 };
 var _user$project$Watch$intro = function (model) {
-	var navButtons = (model.settings.startLstopR ? _elm_lang$core$Basics$identity : _elm_lang$core$List$reverse)(
-		_elm_lang$core$Native_List.fromArray(
-			[
-				A3(
-				_user$project$Watch$col,
-				_user$project$Watch$NoOp,
-				's6 no-pad',
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A3(
-						_user$project$Watch$button,
-						'btn btn-large btn-no-radius white black-text full-width',
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Start')
-							]),
-						_user$project$Watch$NoOp)
-					])),
-				A3(
-				_user$project$Watch$col,
-				_user$project$Watch$NoOp,
-				's6 no-pad',
-				_elm_lang$core$Native_List.fromArray(
-					[
-						A3(
-						_user$project$Watch$button,
-						'btn btn-large btn-no-radius black white-text full-width',
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Stop')
-							]),
-						_user$project$Watch$NoOp)
-					]))
-			]));
-	var navButtonsText = '\n                Use Start to start the new round of parallel times and Stop\n                to stop each time separately.\n            ';
 	var info = _elm_lang$core$Native_List.fromArray(
 		[
 			A3(
 			_user$project$Watch$col,
-			_user$project$Watch$NoOp,
+			_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenSettings),
 			's6',
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9493,12 +9458,12 @@ var _user$project$Watch$intro = function (model) {
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html$text('Start')
+							_elm_lang$html$Html$text('Settings')
 						]))
 				])),
 			A3(
 			_user$project$Watch$col,
-			_user$project$Watch$NoOp,
+			_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenSwitch),
 			's6',
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9510,71 +9475,60 @@ var _user$project$Watch$intro = function (model) {
 						]),
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html$text('3')
+							_elm_lang$html$Html$text('Switch')
 						]))
 				]))
 		]);
-	var infoText = '\n                Press on the Start/Current Time text to enter Settings and\n                3/Paralells counter text to enter Switch screen.\n            ';
+	var infoText = '\n                Press on the \'Start\' text to enter Settings or\n                \'3\' to enter Switch screen.\n            ';
 	return _elm_lang$core$Native_List.fromArray(
 		[
 			A2(
 			_user$project$Watch$section,
-			'full-width valign-wrapper center flex-fill black white-text',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(
-					_user$project$Watch$row,
-					'valign container center flow-text',
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_elm_lang$html$Html$text(infoText)
-						]))
-				])),
-			A2(
-			_user$project$Watch$section,
-			'full-width valign-wrapper no-pad-bot flex-fill',
+			'full-width valign-wrapper black white-text no-pad-bot flex-start',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(_user$project$Watch$row, 'valign full-width center', info)
 				])),
 			A2(
 			_user$project$Watch$section,
-			'full-width valign-wrapper center flex-fill black white-text',
+			'no-pad-bot white black-text container flex-start',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
 					_user$project$Watch$row,
-					'valign container center flow-text',
+					'center',
 					_elm_lang$core$Native_List.fromArray(
 						[
-							_elm_lang$html$Html$text(navButtonsText)
+							A2(
+							_elm_lang$html$Html$p,
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html_Attributes$class('flow-text large-text center')
+								]),
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(infoText)
+								]))
 						]))
 				])),
 			A2(
 			_user$project$Watch$section,
-			'full-width no-pad-bot flex-fill',
-			_elm_lang$core$Native_List.fromArray(
-				[
-					A2(_user$project$Watch$row, '', navButtons)
-				])),
-			A2(
-			_user$project$Watch$section,
-			'full-width no-pad-top center flex-fill white',
+			'full-width center flex-bot white',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A3(
 					_user$project$Watch$button,
-					'btn btn-floating black white-text',
+					'btn btn-floating black',
 					_elm_lang$core$Native_List.fromArray(
 						[
-							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, '', 'clear')
+							A3(_user$project$Watch$icon, _user$project$Watch$NoOp, 'white-text', 'clear')
 						]),
 					_user$project$Watch$SwitchScreen(_user$project$Watch$ScreenStopwatch))
 				]))
 		]);
 };
 var _user$project$Watch$about = function (model) {
-	var aboutText = '\n                About Me!\n            ';
+	var aboutText = '\n                About Me!\n\n\n            ';
 	return _elm_lang$core$Native_List.fromArray(
 		[
 			A2(

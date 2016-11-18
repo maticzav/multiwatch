@@ -641,7 +641,7 @@ stopwatch model =
                         List.reverse
                    )
     in
-        [ section "full-width valign-wrapper no-pad-bot flex-start"
+        [ section "full-width valign-wrapper black white-text no-pad-bot flex-start"
             [ row "valign full-width center" (info) ]
         , section "scroll-wrapper flex-fill" [ row "valign full-width center large-line" times ]
         , section "full-width no-pad-bot flex-end"
@@ -709,44 +709,23 @@ intro model =
         infoText : String
         infoText =
             """
-                Press on the Start/Current Time text to enter Settings and
-                3/Paralells counter text to enter Switch screen.
+                Press on the 'Start' text to enter Settings or
+                '3' to enter Switch screen.
             """
 
         info : List (Html Msg)
         info =
-            [ col (NoOp) "s6" [ p [ class "flow-text large-text" ] [ text "Start" ] ]
-            , col (NoOp) "s6" [ p [ class "flow-text large-text" ] [ text "3" ] ]
+            [ col (SwitchScreen ScreenSettings) "s6" [ p [ class "flow-text large-text" ] [ text "Settings" ] ]
+            , col (SwitchScreen ScreenSwitch) "s6" [ p [ class "flow-text large-text" ] [ text "Switch" ] ]
             ]
-
-        navButtonsText : String
-        navButtonsText =
-            """
-                Use Start to start the new round of parallel times and Stop
-                to stop each time separately.
-            """
-
-        navButtons : List (Html Msg)
-        navButtons =
-            [ col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius white black-text full-width" [ text "Start" ] NoOp ]
-            , col NoOp "s6 no-pad" [ button "btn btn-large btn-no-radius black white-text full-width" [ text "Stop" ] NoOp ]
-            ]
-                |> (if model.settings.startLstopR then
-                        identity
-                    else
-                        List.reverse
-                   )
     in
-        [ section "full-width valign-wrapper center flex-fill black white-text"
-            [ row "valign container center flow-text" [ text infoText ] ]
-        , section "full-width valign-wrapper no-pad-bot flex-fill"
+        [ section "full-width valign-wrapper black white-text no-pad-bot flex-start"
             [ row "valign full-width center" (info) ]
-        , section "full-width valign-wrapper center flex-fill black white-text"
-            [ row "valign container center flow-text" [ text navButtonsText ] ]
-        , section "full-width no-pad-bot flex-fill"
-            [ row "" (navButtons) ]
-        , section "full-width no-pad-top center flex-fill white"
-            [ button "btn btn-floating black white-text" [ icon (NoOp) "" "clear" ] (SwitchScreen ScreenStopwatch) ]
+        , section "no-pad-bot white black-text container flex-start"
+            [ row "center" [ p [ class "flow-text large-text center" ] [ text infoText ] ]
+            ]
+        , section "full-width center flex-bot white"
+            [ button "btn btn-floating black" [ icon (NoOp) "white-text" "clear" ] (SwitchScreen ScreenStopwatch) ]
         ]
 
 
@@ -757,6 +736,8 @@ about model =
         aboutText =
             """
                 About Me!
+
+
             """
     in
         [ section "no-pad-bot white black-text container flex-start"
