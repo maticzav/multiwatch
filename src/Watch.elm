@@ -684,7 +684,7 @@ settings model =
         [ row "center" [ p [ class "flow-text large-text center" ] [ text "Settings" ] ]
         , divider "container"
         ]
-    , section "no-pad-bot white black-text container scroll-wrapper flex-fill"
+    , section "no-pad-bot white black-text container flex-fill"
         [ row "center" [ p [ class "flow-text" ] [ text "Clear all the current times!" ] ]
         , row "center" [ button "btn black white-text" [ text "Clear" ] Clear ]
         , divider "container"

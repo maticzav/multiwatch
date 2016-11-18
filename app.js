@@ -9303,7 +9303,7 @@ var _user$project$Watch$settings = function (model) {
 				])),
 			A2(
 			_user$project$Watch$section,
-			'no-pad-bot white black-text container scroll-wrapper flex-fill',
+			'no-pad-bot white black-text container flex-fill',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
