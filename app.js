@@ -8608,7 +8608,7 @@ var _user$project$Watch$defaultModel = A5(
 	_elm_lang$core$Native_List.fromArray(
 		[]),
 	_elm_lang$core$Maybe$Nothing,
-	A2(_user$project$Watch$Settings, false, 3));
+	A2(_user$project$Watch$Settings, false, 2));
 var _user$project$Watch$init = A2(
 	_elm_lang$core$Platform_Cmd_ops['!'],
 	_user$project$Watch$defaultModel,
@@ -9360,7 +9360,7 @@ var _user$project$Watch$settings = function (model) {
 						_elm_lang$core$List$map,
 						_user$project$Watch$displayParallelsOption(model),
 						_elm_lang$core$Native_List.fromArray(
-							[1, 2, 3, 4, 6, 12]))),
+							[1, 2, 3, 4, 5, 6]))),
 					_user$project$Watch$divider('container'),
 					A2(
 					_user$project$Watch$row,
@@ -9491,19 +9491,19 @@ var _user$project$Watch$intro = function (model) {
 				])),
 			A2(
 			_user$project$Watch$section,
-			'no-pad-bot white black-text flex-start',
+			'no-pad-bot white black-text flex-start full-width',
 			_elm_lang$core$Native_List.fromArray(
 				[
 					A2(
 					_user$project$Watch$row,
-					'center container',
+					'full-width center',
 					_elm_lang$core$Native_List.fromArray(
 						[
 							A2(
 							_elm_lang$html$Html$p,
 							_elm_lang$core$Native_List.fromArray(
 								[
-									_elm_lang$html$Html_Attributes$class('flow-text large-text center')
+									_elm_lang$html$Html_Attributes$class('flow-text large-text container center')
 								]),
 							_elm_lang$core$Native_List.fromArray(
 								[

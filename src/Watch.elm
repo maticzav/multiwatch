@@ -77,7 +77,7 @@ defaultModel =
         0
         []
         Nothing
-        (Settings False 3)
+        (Settings False 2)
 
 
 init : ( Model, Cmd Msg )
@@ -689,7 +689,7 @@ settings model =
         , row "center" [ button "btn black white-text" [ text "Clear" ] Clear ]
         , divider "container"
         , row "center" [ p [ class "flow-text" ] [ text "How many people start at the same time?" ] ]
-        , row "center" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 6, 12 ])
+        , row "center" (List.map (displayParallelsOption model) [ 1, 2, 3, 4, 5, 6 ])
         , divider "container"
         , row "center" [ p [ class "flow-text" ] [ text "Replay intro." ] ]
         , row "center" [ button "btn black white-text" [ text "Intro" ] (SwitchScreen ScreenIntro) ]
@@ -721,8 +721,8 @@ intro model =
     in
         [ section "full-width valign-wrapper black white-text no-pad-bot flex-start"
             [ row "valign full-width center" (info) ]
-        , section "no-pad-bot white black-text flex-start"
-            [ row "center container" [ p [ class "flow-text large-text center" ] [ text infoText ] ]
+        , section "no-pad-bot white black-text flex-start full-width"
+            [ row "full-width center" [ p [ class "flow-text large-text container center" ] [ text infoText ] ]
             ]
         , section "full-width center flex-bot white"
             [ button "btn btn-floating black" [ icon (NoOp) "white-text" "clear" ] (SwitchScreen ScreenStopwatch) ]
